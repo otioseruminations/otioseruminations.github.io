@@ -13,8 +13,6 @@ navbar:
       href: essays.qmd
     - text: About
       href: about.qmd
-      - text: About
-        href: about.qmd
   page-footer:
     center: "© 2026 Otiose Ruminations"
 
