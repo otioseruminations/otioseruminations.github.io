@@ -1,0 +1,879 @@
+---
+title: "Evaluating Two Inverse Tangent Integrals by Complex Analysis and Parseval--Goldstein"
+date: 2026-06-03
+description: "A two-method evaluation of inverse tangent and inverse hyperbolic tangent integrals using wedge contours and the Parseval--Goldstein theorem."
+categories: [mathematics, complex-analysis, laplace-transforms, integrals]
+---
+
+## Introduction
+
+We evaluate two related integrals.
+
+$$I_1(a,b,k)=\int_0^\infty x^a\arctan\left(\frac{k}{1+x^b}\right)\,dx$$
+
+and
+
+$$I_2(a,b,k)=\int_0^\infty x^a\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\,dx$$
+
+The first integral involves the inverse tangent function. The second involves the inverse hyperbolic tangent function.
+
+We evaluate each integral in two ways. First, we use a wedge-contour residue method. Then, we use the Parseval--Goldstein theorem for Laplace transforms.
+
+The final answers are as follows.
+
+$$\boxed{I_1(a,b,k)=\frac{\pi}{a+1}(1+k^2)^{\frac{a+1}{2b}}\frac{\sin\left(\frac{a+1}{b}\arctan k\right)}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
+
+and
+
+$$\boxed{I_2(a,b,k)=\frac{\pi}{2(a+1)}\frac{(1+k)^{\frac{a+1}{b}}-(1-k)^{\frac{a+1}{b}}}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
+
+In the second formula, we use the standard convention
+
+$$\operatorname{arctanh}z=\frac12\log\left(\frac{1+z}{1-z}\right)$$
+
+Throughout the note, define
+
+$$\mu=\frac{a+1}{b}$$
+
+The natural convergence condition is
+
+$$0<\mu<1$$
+
+Equivalently,
+
+$$a>-1,\qquad b>a+1$$
+
+For the second integral, we also assume
+
+$$|k|\le 1$$
+
+For the contour arguments, we first take $k>0$, and in the hyperbolic case $0<k<1$. The remaining cases follow by continuity and oddness.
+
+---
+
+## 1. First Integral, Approach 1: Wedge-Contour Method
+
+We begin with
+
+$$I_1=\int_0^\infty x^a\arctan\left(\frac{k}{1+x^b}\right)\,dx$$
+
+Use integration by parts. Let
+
+$$u=\arctan\left(\frac{k}{1+x^b}\right),\qquad dv=x^a\,dx$$
+
+Then
+
+$$v=\frac{x^{a+1}}{a+1}$$
+
+Now compute $du$. First,
+
+$$\frac{d}{dx}\left(\frac{k}{1+x^b}\right)=-\frac{kb x^{b-1}}{(1+x^b)^2}$$
+
+Therefore,
+
+$$du=\frac{-\frac{kb x^{b-1}}{(1+x^b)^2}}{1+\left(\frac{k}{1+x^b}\right)^2}\,dx$$
+
+Simplifying,
+
+$$du=-\frac{kb x^{b-1}}{(1+x^b)^2+k^2}\,dx$$
+
+Integration by parts gives
+
+$$I_1=\left[\frac{x^{a+1}}{a+1}\arctan\left(\frac{k}{1+x^b}\right)\right]_0^\infty+\frac{bk}{a+1}\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2+k^2}\,dx$$
+
+The boundary term vanishes. As $x\to0^+$,
+
+$$x^{a+1}\arctan\left(\frac{k}{1+x^b}\right)\to0$$
+
+provided $a>-1$. Also, as $x\to\infty$,
+
+$$\arctan\left(\frac{k}{1+x^b}\right)\sim\frac{k}{x^b}$$
+
+Thus
+
+$$x^{a+1}\arctan\left(\frac{k}{1+x^b}\right)\sim kx^{a+1-b}\to0$$
+
+provided $b>a+1$.
+
+Hence
+
+$$I_1=\frac{bk}{a+1}\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2+k^2}\,dx$$
+
+Define
+
+$$C=\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2+k^2}\,dx$$
+
+Then
+
+$$I_1=\frac{bk}{a+1}C$$
+
+Now define
+
+$$f(z)=\frac{z^{a+b}}{(z^b+1)^2+k^2}$$
+
+We use a wedge contour with opening angle
+
+$$\frac{2\pi}{b}$$
+
+The branch is chosen so that
+
+$$0<\arg z<\frac{2\pi}{b}$$
+
+This wedge is useful because rotating $z$ by $2\pi/b$ leaves $z^b$ unchanged:
+
+$$(ze^{2\pi i/b})^b=z^b e^{2\pi i}=z^b$$
+
+The poles occur when
+
+$$(z^b+1)^2+k^2=0$$
+
+Equivalently,
+
+$$(z^b+1-ik)(z^b+1+ik)=0$$
+
+So the two roots inside the wedge satisfy
+
+$$z_1^b=-1+ik$$
+
+and
+
+$$z_2^b=-1-ik$$
+
+Let
+
+$$\alpha=\arctan k$$
+
+Then
+
+$$-1+ik=\sqrt{1+k^2}\,e^{i(\pi-\alpha)}$$
+
+and
+
+$$-1-ik=\sqrt{1+k^2}\,e^{i(\pi+\alpha)}$$
+
+Therefore the enclosed poles are
+
+$$z_1=(1+k^2)^{1/(2b)}e^{i(\pi-\alpha)/b}$$
+
+and
+
+$$z_2=(1+k^2)^{1/(2b)}e^{i(\pi+\alpha)/b}$$
+
+On the circular arc of radius $R$,
+
+$$f(Re^{i\theta})=O(R^{a-b})$$
+
+The arc length is $O(R)$, so the arc integral is
+
+$$O(R^{a+1-b})$$
+
+Since $b>a+1$, this tends to zero.
+
+On the upper ray, put $z=re^{2\pi i/b}$. Then $dz=e^{2\pi i/b}\,dr$, and the denominator is unchanged. The upper ray therefore contributes
+
+$$-e^{2\pi i(a+b+1)/b}C$$
+
+But
+
+$$e^{2\pi i(a+b+1)/b}=e^{2\pi i(a+1)/b}=e^{2\pi i\mu}$$
+
+Hence the contour integral gives
+
+$$(1-e^{2\pi i\mu})C=2\pi i\left(\operatorname{Res}(f,z_1)+\operatorname{Res}(f,z_2)\right)$$
+
+Now compute the residues. At $z_1$, the vanishing factor is $z^b+1-ik$, while the other factor equals $2ik$. Hence
+
+$$\operatorname{Res}(f,z_1)=\frac{z_1^{a+b}}{2ik\cdot bz_1^{b-1}}=\frac{z_1^{a+1}}{2ibk}$$
+
+At $z_2$, the vanishing factor is $z^b+1+ik$, while the other factor equals $-2ik$. Hence
+
+$$\operatorname{Res}(f,z_2)=-\frac{z_2^{a+1}}{2ibk}$$
+
+Therefore,
+
+$$\operatorname{Res}(f,z_1)+\operatorname{Res}(f,z_2)=\frac{z_1^{a+1}-z_2^{a+1}}{2ibk}$$
+
+Thus,
+
+$$(1-e^{2\pi i\mu})C=\frac{\pi}{bk}(z_1^{a+1}-z_2^{a+1})$$
+
+Now,
+
+$$z_1^{a+1}=(1+k^2)^{\mu/2}e^{i\mu(\pi-\alpha)}$$
+
+and
+
+$$z_2^{a+1}=(1+k^2)^{\mu/2}e^{i\mu(\pi+\alpha)}$$
+
+So
+
+$$z_1^{a+1}-z_2^{a+1}=(1+k^2)^{\mu/2}e^{i\pi\mu}(e^{-i\alpha\mu}-e^{i\alpha\mu})$$
+
+Since
+
+$$e^{-i\alpha\mu}-e^{i\alpha\mu}=-2i\sin(\alpha\mu)$$
+
+we get
+
+$$z_1^{a+1}-z_2^{a+1}=-2i(1+k^2)^{\mu/2}e^{i\pi\mu}\sin(\alpha\mu)$$
+
+Also,
+
+$$1-e^{2\pi i\mu}=-2ie^{i\pi\mu}\sin(\pi\mu)$$
+
+Therefore,
+
+$$C=\frac{\pi}{bk}(1+k^2)^{\mu/2}\frac{\sin(\alpha\mu)}{\sin(\pi\mu)}$$
+
+Since $I_1=C\cdot bk/(a+1)$, we obtain
+
+$$I_1=\frac{\pi}{a+1}(1+k^2)^{\mu/2}\frac{\sin(\alpha\mu)}{\sin(\pi\mu)}$$
+
+Substituting $\mu=(a+1)/b$ and $\alpha=\arctan k$, we finally get
+
+$$\boxed{I_1(a,b,k)=\frac{\pi}{a+1}(1+k^2)^{\frac{a+1}{2b}}\frac{\sin\left(\frac{a+1}{b}\arctan k\right)}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
+
+---
+
+## 2. Second Integral, Approach 1: Wedge-Contour Method
+
+Now consider
+
+$$I_2=\int_0^\infty x^a\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\,dx$$
+
+Use integration by parts. Let
+
+$$u=\operatorname{arctanh}\left(\frac{k}{1+x^b}\right),\qquad dv=x^a\,dx$$
+
+Then
+
+$$v=\frac{x^{a+1}}{a+1}$$
+
+Now,
+
+$$\frac{d}{dx}\left(\frac{k}{1+x^b}\right)=-\frac{kb x^{b-1}}{(1+x^b)^2}$$
+
+Also,
+
+$$\frac{d}{dy}\operatorname{arctanh}y=\frac{1}{1-y^2}$$
+
+Therefore,
+
+$$du=-\frac{kb x^{b-1}}{(1+x^b)^2-k^2}\,dx$$
+
+Integration by parts gives
+
+$$I_2=\left[\frac{x^{a+1}}{a+1}\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\right]_0^\infty+\frac{bk}{a+1}\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2-k^2}\,dx$$
+
+The boundary term vanishes. At infinity,
+
+$$\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\sim\frac{k}{x^b}$$
+
+so the boundary term behaves like $kx^{a+1-b}$, which tends to zero when $b>a+1$. At zero, for $|k|<1$, the inverse hyperbolic tangent is finite. At $k=1$, the singularity is logarithmic, which is still harmless under the same condition.
+
+Hence
+
+$$I_2=\frac{bk}{a+1}\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2-k^2}\,dx$$
+
+Define
+
+$$D=\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2-k^2}\,dx$$
+
+Then
+
+$$I_2=\frac{bk}{a+1}D$$
+
+Now define
+
+$$h(z)=\frac{z^{a+b}}{(z^b+1)^2-k^2}$$
+
+Again use the wedge
+
+$$0<\arg z<\frac{2\pi}{b}$$
+
+The poles are determined by
+
+$$(z^b+1)^2-k^2=0$$
+
+Equivalently,
+
+$$(z^b+1-k)(z^b+1+k)=0$$
+
+Thus
+
+$$z_1^b=-1+k=-(1-k)$$
+
+and
+
+$$z_2^b=-1-k=-(1+k)$$
+
+For $0<k<1$, both numbers lie on the negative real axis. The two poles inside the wedge are
+
+$$z_1=(1-k)^{1/b}e^{i\pi/b}$$
+
+and
+
+$$z_2=(1+k)^{1/b}e^{i\pi/b}$$
+
+The same contour computation gives
+
+$$(1-e^{2\pi i\mu})D=2\pi i\left(\operatorname{Res}(h,z_1)+\operatorname{Res}(h,z_2)\right)$$
+
+At $z_1$, the vanishing factor is $z^b+1-k$, and the other factor is $2k$. Hence
+
+$$\operatorname{Res}(h,z_1)=\frac{z_1^{a+b}}{2k\cdot bz_1^{b-1}}=\frac{z_1^{a+1}}{2bk}$$
+
+At $z_2$, the vanishing factor is $z^b+1+k$, and the other factor is $-2k$. Hence
+
+$$\operatorname{Res}(h,z_2)=-\frac{z_2^{a+1}}{2bk}$$
+
+Therefore,
+
+$$\operatorname{Res}(h,z_1)+\operatorname{Res}(h,z_2)=\frac{z_1^{a+1}-z_2^{a+1}}{2bk}$$
+
+So
+
+$$(1-e^{2\pi i\mu})D=\frac{\pi i}{bk}(z_1^{a+1}-z_2^{a+1})$$
+
+Now,
+
+$$z_1^{a+1}=(1-k)^\mu e^{i\pi\mu}$$
+
+and
+
+$$z_2^{a+1}=(1+k)^\mu e^{i\pi\mu}$$
+
+Therefore,
+
+$$z_1^{a+1}-z_2^{a+1}=e^{i\pi\mu}\left((1-k)^\mu-(1+k)^\mu\right)$$
+
+Let
+
+$$\Delta=(1+k)^\mu-(1-k)^\mu$$
+
+Then
+
+$$z_1^{a+1}-z_2^{a+1}=-e^{i\pi\mu}\Delta$$
+
+Since
+
+$$1-e^{2\pi i\mu}=-2ie^{i\pi\mu}\sin(\pi\mu)$$
+
+we get
+
+$$D=\frac{\pi}{2bk}\frac{\Delta}{\sin(\pi\mu)}$$
+
+Therefore,
+
+$$D=\frac{\pi}{2bk}\frac{(1+k)^\mu-(1-k)^\mu}{\sin(\pi\mu)}$$
+
+Since $I_2=D\cdot bk/(a+1)$, we obtain
+
+$$I_2=\frac{\pi}{2(a+1)}\frac{(1+k)^\mu-(1-k)^\mu}{\sin(\pi\mu)}$$
+
+Substituting $\mu=(a+1)/b$, we get
+
+$$\boxed{I_2(a,b,k)=\frac{\pi}{2(a+1)}\frac{(1+k)^{\frac{a+1}{b}}-(1-k)^{\frac{a+1}{b}}}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
+
+The factor $1/2$ is necessary. For small $k$,
+
+$$\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\sim\frac{k}{1+x^b}$$
+
+Therefore,
+
+$$I_2\sim k\int_0^\infty\frac{x^a}{1+x^b}\,dx$$
+
+The standard beta integral gives
+
+$$\int_0^\infty\frac{x^a}{1+x^b}\,dx=\frac{\pi}{b}\csc\left(\frac{\pi(a+1)}{b}\right)$$
+
+Our formula gives the same small-$k$ behavior because
+
+$$(1+k)^\mu-(1-k)^\mu\sim2\mu k$$
+
+Thus,
+
+$$I_2\sim\frac{\pi}{2(a+1)}\frac{2\mu k}{\sin(\pi\mu)}=\frac{\pi k}{b}\csc(\pi\mu)$$
+
+---
+
+## 3. First Integral, Approach 2: Parseval--Goldstein Theorem
+
+Now we evaluate $I_1$ again using the Parseval--Goldstein theorem for Laplace transforms.
+
+Start with
+
+$$I_1=\int_0^\infty x^a\arctan\left(\frac{k}{1+x^b}\right)\,dx$$
+
+Put
+
+$$t=x^b$$
+
+Then
+
+$$x=t^{1/b},\qquad dx=\frac1b t^{1/b-1}\,dt$$
+
+Therefore,
+
+$$x^a\,dx=\frac1b t^{\frac{a+1}{b}-1}\,dt$$
+
+Hence
+
+$$I_1=\frac1b\int_0^\infty t^{\mu-1}\arctan\left(\frac{k}{1+t}\right)\,dt$$
+
+The Parseval--Goldstein theorem says that if
+
+$$F(s)=\mathcal L\{f(t)\}(s)$$
+
+and
+
+$$G(s)=\mathcal L\{g(t)\}(s)$$
+
+then
+
+$$\int_0^\infty f(t)G(t)\,dt=\int_0^\infty F(t)g(t)\,dt$$
+
+provided the integrals converge.
+
+Choose
+
+$$f(t)=t^{\mu-1}$$
+
+and
+
+$$G(t)=\arctan\left(\frac{k}{1+t}\right)$$
+
+Then
+
+$$F(s)=\mathcal L\{t^{\mu-1}\}(s)=\int_0^\infty e^{-st}t^{\mu-1}\,dt=\frac{\Gamma(\mu)}{s^\mu}$$
+
+So
+
+$$F(s)=\frac{\Gamma(\mu)}{s^\mu}$$
+
+Now we need $g(u)$ such that
+
+$$\mathcal L\{g(u)\}(s)=\arctan\left(\frac{k}{1+s}\right)$$
+
+We claim that
+
+$$g(u)=e^{-u}\frac{\sin(ku)}{u}$$
+
+To prove this, define
+
+$$H(s,k)=\int_0^\infty e^{-(s+1)u}\frac{\sin(ku)}{u}\,du$$
+
+Differentiate with respect to $k$:
+
+$$\frac{\partial H}{\partial k}=\int_0^\infty e^{-(s+1)u}\cos(ku)\,du$$
+
+Using
+
+$$\int_0^\infty e^{-Au}\cos(ku)\,du=\frac{A}{A^2+k^2}$$
+
+with $A=s+1$, we obtain
+
+$$\frac{\partial H}{\partial k}=\frac{s+1}{(s+1)^2+k^2}$$
+
+But
+
+$$\frac{\partial}{\partial k}\arctan\left(\frac{k}{s+1}\right)=\frac{s+1}{(s+1)^2+k^2}$$
+
+Also, $H(s,0)=0$, and $\arctan(0)=0$. Therefore,
+
+$$H(s,k)=\arctan\left(\frac{k}{s+1}\right)$$
+
+Hence,
+
+$$\mathcal L^{-1}\left\{\arctan\left(\frac{k}{1+s}\right)\right\}(u)=e^{-u}\frac{\sin(ku)}{u}$$
+
+By Parseval--Goldstein,
+
+$$I_1=\frac1b\int_0^\infty F(u)g(u)\,du$$
+
+Therefore,
+
+$$I_1=\frac1b\int_0^\infty\frac{\Gamma(\mu)}{u^\mu}e^{-u}\frac{\sin(ku)}{u}\,du$$
+
+Thus,
+
+$$I_1=\frac{\Gamma(\mu)}{b}\int_0^\infty e^{-u}\sin(ku)u^{-\mu-1}\,du$$
+
+Define
+
+$$J_1=\int_0^\infty e^{-u}\sin(ku)u^{-\mu-1}\,du$$
+
+Near $u=0$, we have $\sin(ku)\sim ku$, so the integrand behaves like $ku^{-\mu}$, which is integrable because $0<\mu<1$. At infinity, the exponential factor gives convergence.
+
+Let
+
+$$q(u)=e^{-u}\sin(ku)$$
+
+Then
+
+$$J_1=\int_0^\infty q(u)u^{-\mu-1}\,du$$
+
+Since
+
+$$d(u^{-\mu})=-\mu u^{-\mu-1}\,du$$
+
+we have
+
+$$u^{-\mu-1}\,du=-\frac1\mu d(u^{-\mu})$$
+
+Thus,
+
+$$J_1=-\frac1\mu\int_0^\infty q(u)\,d(u^{-\mu})$$
+
+Integrating by parts,
+
+$$J_1=-\frac1\mu\left[q(u)u^{-\mu}\right]_0^\infty+\frac1\mu\int_0^\infty u^{-\mu}q'(u)\,du$$
+
+The boundary term vanishes. At zero,
+
+$$q(u)u^{-\mu}\sim ku^{1-\mu}\to0$$
+
+At infinity, the exponential factor dominates.
+
+Now,
+
+$$q'(u)=e^{-u}(k\cos(ku)-\sin(ku))$$
+
+Therefore,
+
+$$J_1=\frac1\mu\int_0^\infty e^{-u}u^{-\mu}(k\cos(ku)-\sin(ku))\,du$$
+
+Put
+
+$$\nu=1-\mu$$
+
+Then $u^{-\mu}=u^{\nu-1}$, so
+
+$$J_1=\frac1\mu\left[k\int_0^\infty e^{-u}u^{\nu-1}\cos(ku)\,du-\int_0^\infty e^{-u}u^{\nu-1}\sin(ku)\,du\right]$$
+
+Now use
+
+$$\int_0^\infty e^{-(1-ik)u}u^{\nu-1}\,du=\frac{\Gamma(\nu)}{(1-ik)^\nu}$$
+
+Write
+
+$$1-ik=\sqrt{1+k^2}\,e^{-i\theta},\qquad \theta=\arctan k$$
+
+Then
+
+$$(1-ik)^{-\nu}=(1+k^2)^{-\nu/2}e^{i\nu\theta}$$
+
+Taking real and imaginary parts gives
+
+$$\int_0^\infty e^{-u}u^{\nu-1}\cos(ku)\,du=\Gamma(\nu)(1+k^2)^{-\nu/2}\cos(\nu\theta)$$
+
+and
+
+$$\int_0^\infty e^{-u}u^{\nu-1}\sin(ku)\,du=\Gamma(\nu)(1+k^2)^{-\nu/2}\sin(\nu\theta)$$
+
+Therefore,
+
+$$J_1=\frac{\Gamma(\nu)}{\mu}(1+k^2)^{-\nu/2}(k\cos(\nu\theta)-\sin(\nu\theta))$$
+
+Since $\nu=1-\mu$,
+
+$$J_1=\frac{\Gamma(1-\mu)}{\mu}(1+k^2)^{-(1-\mu)/2}\left(k\cos((1-\mu)\theta)-\sin((1-\mu)\theta)\right)$$
+
+Now $k=\tan\theta$. Hence,
+
+$$k\cos((1-\mu)\theta)-\sin((1-\mu)\theta)=\frac{\sin(\mu\theta)}{\cos\theta}$$
+
+Since $\cos\theta=1/\sqrt{1+k^2}$, this becomes
+
+$$k\cos((1-\mu)\theta)-\sin((1-\mu)\theta)=(1+k^2)^{1/2}\sin(\mu\theta)$$
+
+Thus,
+
+$$J_1=\frac{\Gamma(1-\mu)}{\mu}(1+k^2)^{\mu/2}\sin(\mu\theta)$$
+
+Since $\theta=\arctan k$, we get
+
+$$J_1=\frac{\Gamma(1-\mu)}{\mu}(1+k^2)^{\mu/2}\sin(\mu\arctan k)$$
+
+Returning to $I_1$,
+
+$$I_1=\frac{\Gamma(\mu)}{b}J_1$$
+
+So
+
+$$I_1=\frac{\Gamma(\mu)\Gamma(1-\mu)}{b\mu}(1+k^2)^{\mu/2}\sin(\mu\arctan k)$$
+
+Using Euler's reflection formula,
+
+$$\Gamma(\mu)\Gamma(1-\mu)=\frac{\pi}{\sin(\pi\mu)}$$
+
+we obtain
+
+$$I_1=\frac{\pi}{b\mu}(1+k^2)^{\mu/2}\frac{\sin(\mu\arctan k)}{\sin(\pi\mu)}$$
+
+Since $b\mu=a+1$, we finally get
+
+$$\boxed{I_1(a,b,k)=\frac{\pi}{a+1}(1+k^2)^{\frac{a+1}{2b}}\frac{\sin\left(\frac{a+1}{b}\arctan k\right)}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
+
+---
+
+## 4. Second Integral, Approach 2: Parseval--Goldstein Theorem
+
+Now evaluate
+
+$$I_2=\int_0^\infty x^a\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\,dx$$
+
+using the same Laplace-transform method.
+
+Again put
+
+$$t=x^b$$
+
+Then
+
+$$x^a\,dx=\frac1b t^{\frac{a+1}{b}-1}\,dt$$
+
+Hence
+
+$$I_2=\frac1b\int_0^\infty t^{\mu-1}\operatorname{arctanh}\left(\frac{k}{1+t}\right)\,dt$$
+
+Choose
+
+$$f(t)=t^{\mu-1}$$
+
+and
+
+$$G(t)=\operatorname{arctanh}\left(\frac{k}{1+t}\right)$$
+
+As before,
+
+$$F(s)=\mathcal L\{t^{\mu-1}\}(s)=\frac{\Gamma(\mu)}{s^\mu}$$
+
+Now we need $g(u)$ such that
+
+$$\mathcal L\{g(u)\}(s)=\operatorname{arctanh}\left(\frac{k}{1+s}\right)$$
+
+We claim that
+
+$$g(u)=e^{-u}\frac{\sinh(ku)}{u}$$
+
+To prove this, define
+
+$$H(s,k)=\int_0^\infty e^{-(s+1)u}\frac{\sinh(ku)}{u}\,du$$
+
+Differentiate with respect to $k$:
+
+$$\frac{\partial H}{\partial k}=\int_0^\infty e^{-(s+1)u}\cosh(ku)\,du$$
+
+Using
+
+$$\int_0^\infty e^{-Au}\cosh(ku)\,du=\frac{A}{A^2-k^2}$$
+
+with $A=s+1$, we obtain
+
+$$\frac{\partial H}{\partial k}=\frac{s+1}{(s+1)^2-k^2}$$
+
+But
+
+$$\frac{\partial}{\partial k}\operatorname{arctanh}\left(\frac{k}{s+1}\right)=\frac{s+1}{(s+1)^2-k^2}$$
+
+Also, $H(s,0)=0$, and $\operatorname{arctanh}(0)=0$. Hence,
+
+$$H(s,k)=\operatorname{arctanh}\left(\frac{k}{s+1}\right)$$
+
+Therefore,
+
+$$\mathcal L^{-1}\left\{\operatorname{arctanh}\left(\frac{k}{1+s}\right)\right\}(u)=e^{-u}\frac{\sinh(ku)}{u}$$
+
+By Parseval--Goldstein,
+
+$$I_2=\frac1b\int_0^\infty F(u)g(u)\,du$$
+
+Therefore,
+
+$$I_2=\frac1b\int_0^\infty\frac{\Gamma(\mu)}{u^\mu}e^{-u}\frac{\sinh(ku)}{u}\,du$$
+
+Thus,
+
+$$I_2=\frac{\Gamma(\mu)}{b}\int_0^\infty e^{-u}\sinh(ku)u^{-\mu-1}\,du$$
+
+Define
+
+$$J_2=\int_0^\infty e^{-u}\sinh(ku)u^{-\mu-1}\,du$$
+
+Near $u=0$, $\sinh(ku)\sim ku$, so the integrand behaves like $ku^{-\mu}$, which is integrable because $0<\mu<1$.
+
+Let
+
+$$q(u)=e^{-u}\sinh(ku)$$
+
+Then
+
+$$J_2=\int_0^\infty q(u)u^{-\mu-1}\,du$$
+
+Using
+
+$$d(u^{-\mu})=-\mu u^{-\mu-1}\,du$$
+
+we get
+
+$$J_2=-\frac1\mu\int_0^\infty q(u)\,d(u^{-\mu})$$
+
+Integrating by parts,
+
+$$J_2=-\frac1\mu\left[q(u)u^{-\mu}\right]_0^\infty+\frac1\mu\int_0^\infty u^{-\mu}q'(u)\,du$$
+
+The boundary term vanishes. At zero,
+
+$$q(u)u^{-\mu}\sim ku^{1-\mu}\to0$$
+
+At infinity, the expression is controlled for $|k|<1$, and the endpoint $k=1$ follows by continuity.
+
+Now,
+
+$$q'(u)=e^{-u}(k\cosh(ku)-\sinh(ku))$$
+
+Therefore,
+
+$$J_2=\frac1\mu\int_0^\infty e^{-u}u^{-\mu}(k\cosh(ku)-\sinh(ku))\,du$$
+
+Put
+
+$$\nu=1-\mu$$
+
+Then $u^{-\mu}=u^{\nu-1}$, so
+
+$$J_2=\frac1\mu\left[k\int_0^\infty e^{-u}u^{\nu-1}\cosh(ku)\,du-\int_0^\infty e^{-u}u^{\nu-1}\sinh(ku)\,du\right]$$
+
+Now use
+
+$$\cosh(ku)=\frac{e^{ku}+e^{-ku}}2$$
+
+and
+
+$$\sinh(ku)=\frac{e^{ku}-e^{-ku}}2$$
+
+Then
+
+$$\int_0^\infty e^{-u}u^{\nu-1}\cosh(ku)\,du=\frac{\Gamma(\nu)}2\left((1-k)^{-\nu}+(1+k)^{-\nu}\right)$$
+
+and
+
+$$\int_0^\infty e^{-u}u^{\nu-1}\sinh(ku)\,du=\frac{\Gamma(\nu)}2\left((1-k)^{-\nu}-(1+k)^{-\nu}\right)$$
+
+Substituting these into $J_2$,
+
+$$J_2=\frac{\Gamma(\nu)}{2\mu}\left[k\left((1-k)^{-\nu}+(1+k)^{-\nu}\right)-\left((1-k)^{-\nu}-(1+k)^{-\nu}\right)\right]$$
+
+Collecting terms,
+
+$$J_2=\frac{\Gamma(\nu)}{2\mu}\left((k-1)(1-k)^{-\nu}+(k+1)(1+k)^{-\nu}\right)$$
+
+Since $k-1=-(1-k)$, we have
+
+$$(k-1)(1-k)^{-\nu}=-(1-k)^{1-\nu}$$
+
+Also,
+
+$$(k+1)(1+k)^{-\nu}=(1+k)^{1-\nu}$$
+
+Therefore,
+
+$$J_2=\frac{\Gamma(\nu)}{2\mu}\left((1+k)^{1-\nu}-(1-k)^{1-\nu}\right)$$
+
+Since $\nu=1-\mu$, we have $1-\nu=\mu$. Thus,
+
+$$J_2=\frac{\Gamma(1-\mu)}{2\mu}\left((1+k)^\mu-(1-k)^\mu\right)$$
+
+Returning to $I_2$,
+
+$$I_2=\frac{\Gamma(\mu)}{b}J_2$$
+
+Therefore,
+
+$$I_2=\frac{\Gamma(\mu)\Gamma(1-\mu)}{2b\mu}\left((1+k)^\mu-(1-k)^\mu\right)$$
+
+Using Euler's reflection formula,
+
+$$\Gamma(\mu)\Gamma(1-\mu)=\frac{\pi}{\sin(\pi\mu)}$$
+
+we get
+
+$$I_2=\frac{\pi}{2b\mu}\frac{(1+k)^\mu-(1-k)^\mu}{\sin(\pi\mu)}$$
+
+Since $b\mu=a+1$, we finally obtain
+
+$$\boxed{I_2(a,b,k)=\frac{\pi}{2(a+1)}\frac{(1+k)^{\frac{a+1}{b}}-(1-k)^{\frac{a+1}{b}}}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
+
+---
+
+## Final Summary
+
+The inverse tangent integral is
+
+$$\boxed{\int_0^\infty x^a\arctan\left(\frac{k}{1+x^b}\right)\,dx=\frac{\pi}{a+1}(1+k^2)^{\frac{a+1}{2b}}\frac{\sin\left(\frac{a+1}{b}\arctan k\right)}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
+
+The inverse hyperbolic tangent integral is
+
+$$\boxed{\int_0^\infty x^a\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\,dx=\frac{\pi}{2(a+1)}\frac{(1+k)^{\frac{a+1}{b}}-(1-k)^{\frac{a+1}{b}}}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
+
+The wedge-contour method works by reducing the inverse-function integrals to rational integrals and then using residues inside a sector of angle $2\pi/b$.
+
+The Parseval--Goldstein method works by recognizing the Laplace-transform identities
+
+$$\arctan\left(\frac{k}{1+s}\right)=\mathcal L\left\{e^{-u}\frac{\sin(ku)}{u}\right\}(s)$$
+
+and
+
+$$\operatorname{arctanh}\left(\frac{k}{1+s}\right)=\mathcal L\left\{e^{-u}\frac{\sinh(ku)}{u}\right\}(s)$$
+
+After this recognition, the evaluation follows from Gamma integrals and Euler's reflection formula
+
+$$\Gamma(\mu)\Gamma(1-\mu)=\frac{\pi}{\sin(\pi\mu)}$$
+
+
+---
+
+## Some Particularly Nice Values
+
+The general formulas occasionally collapse into surprisingly compact constants. A few such values are listed below. These are not needed for the proof, but they make good aesthetic checks on the final expressions.
+
+For the inverse tangent integral,
+
+$$I_1(a,b,k)=\int_0^\infty x^a\arctan\left(\frac{k}{1+x^b}\right)\,dx,$$
+
+we have
+
+$$I_1(0,2,2\sqrt2)=\pi$$
+
+$$I_1(0,2,2)=\frac{\pi}{\sqrt{\varphi}}$$
+
+$$I_1(0,2,\sqrt3)=\frac{\pi}{\sqrt2}$$
+
+$$I_1(1,4,\sqrt3)=\frac{\pi}{2\sqrt2}$$
+
+where
+
+$$\varphi=\frac{1+\sqrt5}{2}.$$
+
+For the inverse hyperbolic tangent integral,
+
+$$I_2(a,b,k)=\int_0^\infty x^a\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\,dx,$$
+
+we similarly obtain
+
+$$I_2(0,2,1)=\frac{\pi}{\sqrt2}$$
+
+$$I_2(0,2,\frac45)=\frac{\pi}{\sqrt5}$$
+
+$$I_2(0,2,\frac35)=\frac{\pi}{\sqrt{10}}$$
+
+$$I_2(1,4,1)=\frac{\pi}{2\sqrt2}$$
+
+These compact values come from the fact that, when $\mu=(a+1)/b=1/2$, both final formulas reduce to half-angle or square-root expressions. In particular,
+
+$$I_1(0,2,k)=\pi(1+k^2)^{1/4}\sin\left(\frac12\arctan k\right)$$
+
+and
+
+$$I_2(0,2,k)=\frac{\pi}{2}\left(\sqrt{1+k}-\sqrt{1-k}\right).$$
