@@ -1,0 +1,18 @@
+---
+title: "First Essay"
+date: 2026-06-03
+description: "A first test essay for Otiose Ruminations."
+categories: [mathematics, history]
+---
+
+This is the first test essay.
+
+Here is a mathematical expression:
+
+$$
+\int_0^1 \log^2(1-x)\log^2(1+x)\,dx
+$$
+
+And here is a paragraph about history.
+
+The point of this page is only to check that Quarto renders essays correctly.
