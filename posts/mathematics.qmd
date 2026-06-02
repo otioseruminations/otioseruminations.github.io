@@ -1,0 +1,10 @@
+---
+title: "Mathematics"
+listing:
+  contents: posts/mathematics
+  sort: "date desc"
+  type: default
+  categories: true
+---
+
+Essays, derivations, computations, and long-form mathematical notes.
