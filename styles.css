@@ -1,0 +1,15 @@
+body {
+  line-height: 1.7;
+}
+
+p {
+  font-size: 1.05rem;
+}
+
+.quarto-title-block .title {
+  font-weight: 700;
+}
+
+.navbar-title {
+  font-weight: 700;
+}
