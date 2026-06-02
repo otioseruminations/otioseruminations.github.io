@@ -1,0 +1,7 @@
+---
+title: "About"
+---
+
+**Otiose Ruminations** is a personal essay site for slow thinking.
+
+The main subjects are likely to be mathematics and history, but the site is deliberately not locked into a permanent category structure. The point is to preserve serious thought in a clean, readable form.
