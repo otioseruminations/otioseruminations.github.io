@@ -5,10 +5,14 @@ website:
   title: "Otiose Ruminations"
   site-url: "https://otioseruminations.github.io"
   description: "Essays in mathematics, history, and other changing fascinations."
-  navbar:
-    right:
-      - text: Essays
-        href: essays.qmd
+navbar:
+  right:
+    - text: Mathematics
+      href: mathematics.qmd
+    - text: All Essays
+      href: essays.qmd
+    - text: About
+      href: about.qmd
       - text: About
         href: about.qmd
   page-footer:
