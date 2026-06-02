@@ -1,0 +1,13 @@
+---
+title: "Otiose Ruminations"
+---
+
+Welcome to **Otiose Ruminations**.
+
+Pondering and writing on eclectic interests that fascinate me.
+
+## Recent direction
+
+I expect the subject matter to change over time.
+
+I recommend starting with the [Essays](essays.qmd) page.
