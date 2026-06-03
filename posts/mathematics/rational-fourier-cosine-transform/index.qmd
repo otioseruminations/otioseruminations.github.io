@@ -1,0 +1,561 @@
+---
+title: "A Partial-Fraction Evaluation of a Rational Fourier Cosine Transform"
+date: 2026-06-03
+description: "A finite-sum evaluation of the Fourier cosine transform of 1/(x^{2n}+a^{2n}) using partial fractions and a Laplace-transform proof of the complex base integral."
+categories: ["mathematics", "Fourier analysis", "Laplace transforms", "integrals", "partial fractions"]
+---
+## Introduction
+
+In this note, we evaluate the integral family
+
+$$I_n(a,b)=\int_0^\infty \frac{\cos(bx)}{x^{2n}+a^{2n}}\,dx$$
+
+where
+
+$$a>0,\qquad b\ge0,\qquad n\in\mathbb N.$$
+
+The method is based on two ideas.
+
+First, we decompose
+
+$$\frac{1}{x^{2n}+a^{2n}}$$
+
+into a sum of simpler fractions of the form
+
+$$\frac{A_k}{x^2+c_k^2}.$$
+
+Second, we use the base integral
+
+$$\int_0^\infty \frac{\cos(bx)}{x^2+c^2}\,dx=\frac{\pi}{2c}e^{-bc}$$
+
+for complex $c$ with $\operatorname{Re}(c)>0$.
+
+The final closed form is
+
+$$\boxed{I_n(a,b)=\frac{\pi}{2na^{2n}}\sum_{k=0}^{n-1}c_k e^{-bc_k}}$$
+
+where
+
+$$\boxed{c_k=a\exp\left(\frac{i(2k+1-n)\pi}{2n}\right),\qquad k=0,1,\dots,n-1.}$$
+
+Equivalently, if
+
+$$t=ab$$
+
+and
+
+$$\theta_k=\frac{(2k+1-n)\pi}{2n},$$
+
+then
+
+$$\boxed{I_n(a,b)=\frac{\pi}{2na^{2n-1}}\sum_{k=0}^{n-1}e^{-t\cos\theta_k}\cos(\theta_k-t\sin\theta_k)}.$$
+
+This second form is completely real.
+
+---
+
+# 1. The Base Integral
+
+We first establish the base result
+
+$$K_c(b)=\int_0^\infty \frac{\cos(bx)}{x^2+c^2}\,dx.$$
+
+For real $c>0$, the classical answer is
+
+$$K_c(b)=\frac{\pi}{2c}e^{-bc}.$$
+
+However, in our application, $c$ will usually be complex. So we need the same identity for complex $c$ satisfying
+
+$$\operatorname{Re}(c)>0.$$
+
+We prove this by taking the Laplace transform with respect to $b$.
+
+Let
+
+$$K_c(b)=\int_0^\infty \frac{\cos(bx)}{x^2+c^2}\,dx.$$
+
+Taking the Laplace transform in $b$ gives
+
+$$\mathcal L_b\{K_c(b)\}(s)=\int_0^\infty e^{-sb}K_c(b)\,db.$$
+
+Substitute the integral expression for $K_c(b)$:
+
+$$\mathcal L_b\{K_c(b)\}(s)=\int_0^\infty e^{-sb}\left(\int_0^\infty \frac{\cos(bx)}{x^2+c^2}\,dx\right)db.$$
+
+Interchanging the order of integration,
+
+$$\mathcal L_b\{K_c(b)\}(s)=\int_0^\infty \frac{1}{x^2+c^2}\left(\int_0^\infty e^{-sb}\cos(bx)\,db\right)dx.$$
+
+Now
+
+$$\int_0^\infty e^{-sb}\cos(bx)\,db=\frac{s}{s^2+x^2}.$$
+
+Therefore
+
+$$\mathcal L_b\{K_c(b)\}(s)=\int_0^\infty \frac{s}{(x^2+s^2)(x^2+c^2)}\,dx.$$
+
+Now decompose
+
+$$\frac{s}{(x^2+s^2)(x^2+c^2)}=\frac{s}{c^2-s^2}\left(\frac{1}{x^2+s^2}-\frac{1}{x^2+c^2}\right).$$
+
+Using
+
+$$\int_0^\infty \frac{dx}{x^2+q^2}=\frac{\pi}{2q},$$
+
+we get
+
+$$\mathcal L_b\{K_c(b)\}(s)=\frac{s}{c^2-s^2}\left(\frac{\pi}{2s}-\frac{\pi}{2c}\right).$$
+
+Simplifying,
+
+$$\mathcal L_b\{K_c(b)\}(s)=\frac{\pi}{2c(s+c)}.$$
+
+But
+
+$$\mathcal L_b\left\{\frac{\pi}{2c}e^{-bc}\right\}(s)=\frac{\pi}{2c(s+c)}.$$
+
+Hence
+
+$$\boxed{\int_0^\infty \frac{\cos(bx)}{x^2+c^2}\,dx=\frac{\pi}{2c}e^{-bc}}$$
+
+for $\operatorname{Re}(c)>0$ and $b\ge0$.
+
+---
+
+# 2. Factoring the Denominator
+
+We now study
+
+$$I_n(a,b)=\int_0^\infty \frac{\cos(bx)}{x^{2n}+a^{2n}}\,dx.$$
+
+Let
+
+$$y=x^2.$$
+
+Then
+
+$$x^{2n}+a^{2n}=y^n+a^{2n}.$$
+
+The roots of
+
+$$y^n+a^{2n}=0$$
+
+are
+
+$$y_k=a^2e^{i(2k+1)\pi/n},\qquad k=0,1,\dots,n-1.$$
+
+Therefore,
+
+$$y^n+a^{2n}=\prod_{k=0}^{n-1}(y-y_k).$$
+
+Returning to $x$, this becomes
+
+$$x^{2n}+a^{2n}=\prod_{k=0}^{n-1}(x^2-y_k).$$
+
+We want each factor to look like $x^2+c_k^2$. So define $c_k$ by
+
+$$y_k=-c_k^2.$$
+
+A convenient choice is
+
+$$c_k=a\exp\left(\frac{i(2k+1-n)\pi}{2n}\right),\qquad k=0,1,\dots,n-1.$$
+
+Indeed,
+
+$$-c_k^2=a^2e^{i(2k+1)\pi/n}=y_k.$$
+
+Thus
+
+$$x^{2n}+a^{2n}=\prod_{k=0}^{n-1}(x^2+c_k^2).$$
+
+Also, the arguments of the $c_k$ satisfy
+
+$$-\frac{\pi}{2}<\arg(c_k)<\frac{\pi}{2}.$$
+
+Hence
+
+$$\operatorname{Re}(c_k)>0.$$
+
+This is exactly the condition needed to apply the complex version of the base integral.
+
+---
+
+# 3. Computing the Partial Fraction Coefficients
+
+We now write
+
+$$\frac{1}{x^{2n}+a^{2n}}=\sum_{k=0}^{n-1}\frac{A_k}{x^2+c_k^2}.$$
+
+Since $y=x^2$, this is equivalent to
+
+$$\frac{1}{y^n+a^{2n}}=\sum_{k=0}^{n-1}\frac{A_k}{y-y_k}.$$
+
+The coefficient $A_k$ is obtained by the standard cover-up formula:
+
+$$A_k=\lim_{y\to y_k}\frac{y-y_k}{y^n+a^{2n}}.$$
+
+Since the denominator has derivative
+
+$$\frac{d}{dy}(y^n+a^{2n})=ny^{n-1},$$
+
+we get
+
+$$A_k=\frac{1}{ny_k^{n-1}}.$$
+
+But
+
+$$y_k=-c_k^2.$$
+
+Therefore
+
+$$A_k=\frac{1}{n(-c_k^2)^{n-1}}.$$
+
+Hence
+
+$$A_k=\frac{(-1)^{n-1}}{n c_k^{2n-2}}.$$
+
+Therefore, the partial fraction decomposition is
+
+$$\boxed{\frac{1}{x^{2n}+a^{2n}}=\sum_{k=0}^{n-1}\frac{(-1)^{n-1}}{n c_k^{2n-2}}\cdot\frac{1}{x^2+c_k^2}}.$$
+
+This is the main algebraic step.
+
+---
+
+# 4. Applying the Base Integral
+
+Using the partial fraction decomposition,
+
+$$I_n(a,b)=\sum_{k=0}^{n-1}A_k\int_0^\infty \frac{\cos(bx)}{x^2+c_k^2}\,dx.$$
+
+By the base integral,
+
+$$\int_0^\infty \frac{\cos(bx)}{x^2+c_k^2}\,dx=\frac{\pi}{2c_k}e^{-bc_k}.$$
+
+Therefore,
+
+$$I_n(a,b)=\frac{\pi}{2}\sum_{k=0}^{n-1}\frac{A_k}{c_k}e^{-bc_k}.$$
+
+Substituting
+
+$$A_k=\frac{(-1)^{n-1}}{n c_k^{2n-2}},$$
+
+we obtain
+
+$$I_n(a,b)=\frac{\pi(-1)^{n-1}}{2n}\sum_{k=0}^{n-1}\frac{e^{-bc_k}}{c_k^{2n-1}}.$$
+
+This is already a closed form.
+
+However, it simplifies further. Since
+
+$$c_k^{2n}=(-1)^{n-1}a^{2n},$$
+
+we have
+
+$$\frac{(-1)^{n-1}}{c_k^{2n-1}}=\frac{c_k}{a^{2n}}.$$
+
+Thus the final summation becomes
+
+$$\boxed{I_n(a,b)=\frac{\pi}{2na^{2n}}\sum_{k=0}^{n-1}c_k e^{-bc_k}}.$$
+
+This is a surprisingly clean closed form.
+
+---
+
+# 5. A Real Form of the Answer
+
+The formula above is complex-looking, but the final integral is real. To make this explicit, write
+
+$$c_k=ae^{i\theta_k}$$
+
+where
+
+$$\theta_k=\frac{(2k+1-n)\pi}{2n}.$$
+
+Also put
+
+$$t=ab.$$
+
+Then
+
+$$c_k e^{-bc_k}=ae^{i\theta_k}e^{-t e^{i\theta_k}}.$$
+
+Since
+
+$$e^{-t e^{i\theta_k}}=e^{-t\cos\theta_k}e^{-it\sin\theta_k},$$
+
+we get
+
+$$e^{i\theta_k}e^{-t e^{i\theta_k}}=e^{-t\cos\theta_k}e^{i(\theta_k-t\sin\theta_k)}.$$
+
+Taking real parts and using conjugate-pair cancellation, the answer becomes
+
+$$\boxed{I_n(a,b)=\frac{\pi}{2na^{2n-1}}\sum_{k=0}^{n-1}e^{-t\cos\theta_k}\cos(\theta_k-t\sin\theta_k)}$$
+
+where
+
+$$t=ab$$
+
+and
+
+$$\theta_k=\frac{(2k+1-n)\pi}{2n}.$$
+
+This is often the nicest final real form.
+
+---
+
+# 6. Paired Real Forms
+
+The previous real formula can be simplified further by pairing conjugate angles.
+
+## Even $n$
+
+Suppose
+
+$$n=2m.$$
+
+Then the angles occur in pairs
+
+$$\pm\frac{\pi}{2n},\quad \pm\frac{3\pi}{2n},\quad \dots,\quad \pm\frac{(2m-1)\pi}{2n}.$$
+
+Therefore,
+
+$$\boxed{I_n(a,b)=\frac{\pi}{na^{2n-1}}\sum_{j=1}^{m}e^{-t\cos\theta_j}\cos(\theta_j-t\sin\theta_j)}$$
+
+where
+
+$$\theta_j=\frac{(2j-1)\pi}{2n},\qquad j=1,2,\dots,m.$$
+
+## Odd $n$
+
+Suppose
+
+$$n=2m+1.$$
+
+Then one angle is $0$, and the rest occur in conjugate pairs. Hence
+
+$$\boxed{I_n(a,b)=\frac{\pi}{2na^{2n-1}}e^{-t}+\frac{\pi}{na^{2n-1}}\sum_{j=1}^{m}e^{-t\cos(j\pi/n)}\cos\left(\frac{j\pi}{n}-t\sin\frac{j\pi}{n}\right)}.$$
+
+This explains why odd values of $n$ contain a solitary $e^{-ab}$ term.
+
+---
+
+# 7. Alternative Upper-Half-Plane Form
+
+Another classical-looking form uses the angles
+
+$$\phi_j=\frac{(2j+1)\pi}{2n},\qquad j=0,1,\dots,n-1.$$
+
+Then the same integral can be written as
+
+$$\boxed{I_n(a,b)=\frac{\pi}{2na^{2n-1}}\sum_{j=0}^{n-1}e^{-t\sin\phi_j}\sin(\phi_j+t\cos\phi_j)}.$$
+
+This form makes the exponential decay pattern especially visible.
+
+The slowest exponential decay comes from the smallest value of $\sin\phi_j$, namely
+
+$$\sin\left(\frac{\pi}{2n}\right).$$
+
+Thus the leading large-$b$ envelope behaves like
+
+$$e^{-ab\sin(\pi/(2n))}.$$
+
+This should be understood as an envelope statement, because the leading term is oscillatory and can vanish at isolated values of $b$.
+
+---
+
+# 8. Explicit Values for Small $n$
+
+Let
+
+$$t=ab.$$
+
+## Case $n=1$
+
+$$I_1(a,b)=\int_0^\infty\frac{\cos(bx)}{x^2+a^2}\,dx.$$
+
+The result is
+
+$$\boxed{I_1(a,b)=\frac{\pi}{2a}e^{-t}}.$$
+
+## Case $n=2$
+
+$$I_2(a,b)=\int_0^\infty\frac{\cos(bx)}{x^4+a^4}\,dx.$$
+
+The result is
+
+$$\boxed{I_2(a,b)=\frac{\pi}{2\sqrt2\,a^3}e^{-t/\sqrt2}\left(\cos\frac{t}{\sqrt2}+\sin\frac{t}{\sqrt2}\right)}.$$
+
+## Case $n=3$
+
+$$I_3(a,b)=\int_0^\infty\frac{\cos(bx)}{x^6+a^6}\,dx.$$
+
+The result is
+
+$$\boxed{I_3(a,b)=\frac{\pi}{6a^5}\left[e^{-t}+2e^{-t/2}\cos\left(\frac{\sqrt3t}{2}-\frac{\pi}{3}\right)\right]}.$$
+
+Equivalently,
+
+$$\boxed{I_3(a,b)=\frac{\pi}{6a^5}\left[e^{-t}+e^{-t/2}\cos\left(\frac{\sqrt3t}{2}\right)+\sqrt3e^{-t/2}\sin\left(\frac{\sqrt3t}{2}\right)\right]}.$$
+
+## Case $n=4$
+
+$$I_4(a,b)=\int_0^\infty\frac{\cos(bx)}{x^8+a^8}\,dx.$$
+
+The result is
+
+$$\boxed{I_4(a,b)=\frac{\pi}{4a^7}\left[e^{-t\cos(\pi/8)}\cos\left(\frac{\pi}{8}-t\sin\frac{\pi}{8}\right)+e^{-t\cos(3\pi/8)}\cos\left(\frac{3\pi}{8}-t\sin\frac{3\pi}{8}\right)\right]}.$$
+
+---
+
+# 9. The Special Case $b=0$
+
+When $b=0$, the integral becomes
+
+$$I_n(a,0)=\int_0^\infty\frac{dx}{x^{2n}+a^{2n}}.$$
+
+The classical beta-integral value is
+
+$$\boxed{I_n(a,0)=\frac{\pi}{2na^{2n-1}}\csc\left(\frac{\pi}{2n}\right)}.$$
+
+This also follows from the summation formula.
+
+Indeed, putting $b=0$ in
+
+$$I_n(a,b)=\frac{\pi}{2na^{2n}}\sum_{k=0}^{n-1}c_k e^{-bc_k}$$
+
+gives
+
+$$I_n(a,0)=\frac{\pi}{2na^{2n}}\sum_{k=0}^{n-1}c_k.$$
+
+Since the sum of the selected roots is
+
+$$\sum_{k=0}^{n-1}c_k=a\csc\left(\frac{\pi}{2n}\right),$$
+
+we recover
+
+$$I_n(a,0)=\frac{\pi}{2na^{2n-1}}\csc\left(\frac{\pi}{2n}\right).$$
+
+---
+
+# 10. A Differential Recurrence in $b$
+
+A simple adjacent recurrence in $n$, such as one expressing $I_{n+1}$ directly in terms of $I_n$ and $I_{n-1}$, does not naturally emerge from this representation. The reason is that changing $n$ changes the whole set of exponential modes.
+
+However, for fixed $n$, the function $I_n(a,b)$ satisfies a clean differential recurrence in $b$.
+
+Differentiate under the integral sign $2n$ times:
+
+$$\frac{d^{2n}}{db^{2n}}\cos(bx)=(-1)^n x^{2n}\cos(bx).$$
+
+Therefore, for $b>0$,
+
+$$I_n^{(2n)}(a,b)=(-1)^n\int_0^\infty\frac{x^{2n}\cos(bx)}{x^{2n}+a^{2n}}\,dx.$$
+
+Now write
+
+$$\frac{x^{2n}}{x^{2n}+a^{2n}}=1-\frac{a^{2n}}{x^{2n}+a^{2n}}.$$
+
+Hence
+
+$$I_n^{(2n)}(a,b)=(-1)^n\int_0^\infty\cos(bx)\,dx-(-1)^n a^{2n}I_n(a,b).$$
+
+For $b>0$, in the Abel-regularized sense,
+
+$$\int_0^\infty\cos(bx)\,dx=0.$$
+
+Thus
+
+$$I_n^{(2n)}(a,b)=(-1)^{n+1}a^{2n}I_n(a,b).$$
+
+Equivalently,
+
+$$\boxed{I_n^{(2n)}(a,b)+(-1)^n a^{2n}I_n(a,b)=0,\qquad b>0.}$$
+
+This is a genuine recurrence in derivatives. For example,
+
+$$I_1''(a,b)-a^2I_1(a,b)=0,$$
+
+$$I_2^{(4)}(a,b)+a^4I_2(a,b)=0,$$
+
+and
+
+$$I_3^{(6)}(a,b)-a^6I_3(a,b)=0.$$
+
+More generally,
+
+$$\boxed{I_n^{(m+2n)}(a,b)=(-1)^{n+1}a^{2n}I_n^{(m)}(a,b)}.$$
+
+This should be understood for $b>0$. If one extends $I_n(a,b)$ to negative $b$ by evenness, then special care is needed at $b=0$ because one-sided derivatives may appear.
+
+---
+
+# 11. Composite-Index Reduction
+
+There is also a recurrence-like structure when the index is composite.
+
+For example, doubling gives
+
+$$x^{4n}+a^{4n}=(x^{2n}-ia^{2n})(x^{2n}+ia^{2n}).$$
+
+Therefore,
+
+$$\frac{1}{x^{4n}+a^{4n}}=\frac{1}{2ia^{2n}}\left(\frac{1}{x^{2n}-ia^{2n}}-\frac{1}{x^{2n}+ia^{2n}}\right).$$
+
+This expresses $I_{2n}$ using complex-parameter versions of $I_n$:
+
+$$\boxed{I_{2n}(a,b)=\frac{I_n(ae^{-i\pi/(4n)},b)-I_n(ae^{i\pi/(4n)},b)}{2ia^{2n}}.}$$
+
+This is not a simple real-parameter recurrence. Rather, it is a complex-parameter reduction.
+
+More generally, if $N=mn$, then
+
+$$x^{2N}+a^{2N}=x^{2mn}+a^{2mn}.$$
+
+Putting
+
+$$Y=x^{2n},$$
+
+we get
+
+$$x^{2mn}+a^{2mn}=Y^m+a^{2mn}.$$
+
+Factoring in $Y$ expresses $I_{mn}(a,b)$ as a sum of complex-parameter $I_n$-type integrals.
+
+So the honest conclusion is:
+
+A clean adjacent recurrence in $n$ is not apparent, because the pole angles for $I_n$ and $I_{n+1}$ do not nest naturally. But fixed-$n$ differential recurrences and composite-index reductions do exist.
+
+---
+
+# Final Summary
+
+We evaluated
+
+$$I_n(a,b)=\int_0^\infty \frac{\cos(bx)}{x^{2n}+a^{2n}}\,dx.$$
+
+The main closed form is
+
+$$\boxed{I_n(a,b)=\frac{\pi}{2na^{2n}}\sum_{k=0}^{n-1}c_k e^{-bc_k}}$$
+
+where
+
+$$\boxed{c_k=a\exp\left(\frac{i(2k+1-n)\pi}{2n}\right),\qquad k=0,1,\dots,n-1.}$$
+
+Equivalently, with $t=ab$ and
+
+$$\theta_k=\frac{(2k+1-n)\pi}{2n},$$
+
+we have the real form
+
+$$\boxed{I_n(a,b)=\frac{\pi}{2na^{2n-1}}\sum_{k=0}^{n-1}e^{-t\cos\theta_k}\cos(\theta_k-t\sin\theta_k)}.$$
+
+The method rests on the partial fraction expansion
+
+$$\frac{1}{x^{2n}+a^{2n}}=\sum_{k=0}^{n-1}\frac{(-1)^{n-1}}{n c_k^{2n-2}}\cdot\frac{1}{x^2+c_k^2}$$
+
+and the complex base integral
+
+$$\int_0^\infty \frac{\cos(bx)}{x^2+c^2}\,dx=\frac{\pi}{2c}e^{-bc},\qquad \operatorname{Re}(c)>0.$$
+
+Thus the originally difficult integral is reduced to a finite sum of elementary exponential terms.
