@@ -54,7 +54,7 @@ This second form is completely real.
 
 ---
 
-# 1. The Base Integral
+## 1. The Base Integral
 
 We first establish the base result
 
@@ -122,7 +122,7 @@ for $\operatorname{Re}(c)>0$ and $b\ge0$.
 
 ---
 
-# 2. Factoring the Denominator
+## 2. Factoring the Denominator
 
 We now study
 
@@ -180,7 +180,7 @@ This is exactly the condition needed to apply the complex version of the base in
 
 ---
 
-# 3. Computing the Partial Fraction Coefficients
+## 3. Computing the Partial Fraction Coefficients
 
 We now write
 
@@ -222,7 +222,7 @@ This is the main algebraic step.
 
 ---
 
-# 4. Applying the Base Integral
+## 4. Applying the Base Integral
 
 Using the partial fraction decomposition,
 
@@ -262,7 +262,7 @@ This is a surprisingly clean closed form.
 
 ---
 
-# 5. A Real Form of the Answer
+## 5. A Real Form of the Answer
 
 The formula above is complex-looking, but the final integral is real. To make this explicit, write
 
@@ -304,11 +304,11 @@ This is often the nicest final real form.
 
 ---
 
-# 6. Paired Real Forms
+## 6. Paired Real Forms
 
 The previous real formula can be simplified further by pairing conjugate angles.
 
-## Even $n$
+### Even $n$
 
 Suppose
 
@@ -326,7 +326,7 @@ where
 
 $$\theta_j=\frac{(2j-1)\pi}{2n},\qquad j=1,2,\dots,m.$$
 
-## Odd $n$
+### Odd $n$
 
 Suppose
 
@@ -340,7 +340,7 @@ This explains why odd values of $n$ contain a solitary $e^{-ab}$ term.
 
 ---
 
-# 7. Alternative Upper-Half-Plane Form
+## 7. Alternative Upper-Half-Plane Form
 
 Another classical-looking form uses the angles
 
@@ -364,7 +364,7 @@ This should be understood as an envelope statement, because the leading term is 
 
 ---
 
-# 8. Explicit Values for Small $n$
+## 8. Explicit Values for Small $n$
 
 Let
 
@@ -378,7 +378,7 @@ The result is
 
 $$\boxed{I_1(a,b)=\frac{\pi}{2a}e^{-t}}.$$
 
-## Case $n=2$
+### Case $n=2$
 
 $$I_2(a,b)=\int_0^\infty\frac{\cos(bx)}{x^4+a^4}\,dx.$$
 
@@ -386,7 +386,7 @@ The result is
 
 $$\boxed{I_2(a,b)=\frac{\pi}{2\sqrt2\,a^3}e^{-t/\sqrt2}\left(\cos\frac{t}{\sqrt2}+\sin\frac{t}{\sqrt2}\right)}.$$
 
-## Case $n=3$
+### Case $n=3$
 
 $$I_3(a,b)=\int_0^\infty\frac{\cos(bx)}{x^6+a^6}\,dx.$$
 
@@ -398,7 +398,7 @@ Equivalently,
 
 $$\boxed{I_3(a,b)=\frac{\pi}{6a^5}\left[e^{-t}+e^{-t/2}\cos\left(\frac{\sqrt3t}{2}\right)+\sqrt3e^{-t/2}\sin\left(\frac{\sqrt3t}{2}\right)\right]}.$$
 
-## Case $n=4$
+### Case $n=4$
 
 $$I_4(a,b)=\int_0^\infty\frac{\cos(bx)}{x^8+a^8}\,dx.$$
 
@@ -408,7 +408,7 @@ $$\boxed{I_4(a,b)=\frac{\pi}{4a^7}\left[e^{-t\cos(\pi/8)}\cos\left(\frac{\pi}{8}
 
 ---
 
-# 9. The Special Case $b=0$
+## 9. The Special Case $b=0$
 
 When $b=0$, the integral becomes
 
@@ -438,7 +438,7 @@ $$I_n(a,0)=\frac{\pi}{2na^{2n-1}}\csc\left(\frac{\pi}{2n}\right).$$
 
 ---
 
-# 10. A Differential Recurrence in $b$
+## 10. A Differential Recurrence in $b$
 
 A simple adjacent recurrence in $n$, such as one expressing $I_{n+1}$ directly in terms of $I_n$ and $I_{n-1}$, does not naturally emerge from this representation. The reason is that changing $n$ changes the whole set of exponential modes.
 
@@ -490,7 +490,7 @@ This should be understood for $b>0$. If one extends $I_n(a,b)$ to negative $b$ b
 
 ---
 
-# 11. Composite-Index Reduction
+## 11. Composite-Index Reduction
 
 There is also a recurrence-like structure when the index is composite.
 
@@ -528,7 +528,7 @@ A clean adjacent recurrence in $n$ is not apparent, because the pole angles for 
 
 ---
 
-# Final Summary
+## Final Summary
 
 We evaluated
 
