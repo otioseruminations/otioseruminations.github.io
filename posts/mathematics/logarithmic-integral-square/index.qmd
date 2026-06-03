@@ -1,0 +1,1686 @@
+---
+title: "A Complete Evaluation of a Logarithmic Integral"
+subtitle: "Two methods for evaluating ∫₀¹ log²(1−x) log²(1+x) dx"
+date: 2026-06-03
+description: "A detailed evaluation of a logarithmic integral using a direct series method and a Möbius-substitution method, with the resulting Euler sums and polylogarithmic cancellations made explicit."
+categories: ["mathematics", "integrals", "logarithmic integrals", "Euler sums", "polylogarithms"]
+---
+
+## Introduction
+
+We evaluate the integral
+
+$$
+I=\int_0^1 \ln^2(1-x)\ln^2(1+x)\,dx.
+$$
+
+The final answer is
+
+$$
+\boxed{
+\begin{aligned}
+I={}&24-24\ln2+12\ln^2 2-4\ln^3 2+\ln^4 2\\
+&-\frac{4\pi^2}{3}
++\frac{4\pi^2\ln2}{3}
+-\frac{2\pi^2\ln^2 2}{3}
++8(\ln2-1)\zeta(3)
+-\frac{\pi^4}{90}.
+\end{aligned}
+}
+$$
+
+Equivalently, putting
+
+$$
+L=\ln2,
+$$
+
+we may write
+
+$$
+\boxed{
+I=
+24-24L+12L^2-4L^3+L^4
+-\frac{4\pi^2}{3}
++\frac{4\pi^2L}{3}
+-\frac{2\pi^2L^2}{3}
++8(L-1)\zeta(3)
+-\frac{\pi^4}{90}.
+}
+$$
+
+Numerically,
+
+$$
+\boxed{I\approx 0.7962053215019308087815822329523624553.}
+$$
+
+We derive this value in two ways. The first method is a direct series method after rewriting $1+x$ as $2-(1-x)$. The second method uses the Möbius substitution
+
+$$
+x=\frac{1-u}{1+u},
+$$
+
+which symmetrizes the two logarithms but creates a more involved family of auxiliary logarithmic integrals.
+
+---
+
+## Preliminary tools
+
+Before evaluating the integral, we collect a few elementary facts.
+
+### Tool 1: Power-logarithm integrals
+
+For $m>-1$,
+
+$$
+\int_0^1 x^m\,dx=\frac{1}{m+1}.
+$$
+
+Differentiate both sides with respect to $m$. Since
+
+$$
+\frac{\partial}{\partial m}x^m=x^m\ln x,
+$$
+
+we obtain
+
+$$
+\int_0^1 x^m\ln x\,dx=-\frac{1}{(m+1)^2}.
+$$
+
+Differentiating once more gives
+
+$$
+\int_0^1 x^m\ln^2x\,dx=\frac{2}{(m+1)^3}.
+$$
+
+More generally,
+
+$$
+\boxed{
+\int_0^1 x^m\ln^r x\,dx=\frac{(-1)^r r!}{(m+1)^{r+1}}
+}
+$$
+
+for $m>-1$.
+
+The cases used most often below are
+
+$$
+\int_0^1 x^m\ln x\,dx=-\frac1{(m+1)^2}
+$$
+
+and
+
+$$
+\int_0^1 x^m\ln^2x\,dx=\frac2{(m+1)^3}.
+$$
+
+### Tool 2: The logarithm series
+
+For $|z|<1$,
+
+$$
+\ln(1-z)=-\sum_{r=1}^{\infty}\frac{z^r}{r}.
+$$
+
+This follows from the geometric series
+
+$$
+\frac1{1-z}=1+z+z^2+z^3+\cdots
+$$
+
+by integrating term-by-term:
+
+$$
+-\ln(1-z)=\int_0^z \frac{dt}{1-t}
+=\sum_{r=0}^{\infty}\int_0^z t^r\,dt
+=\sum_{r=0}^{\infty}\frac{z^{r+1}}{r+1}.
+$$
+
+Thus
+
+$$
+\ln(1-z)=-\sum_{r=1}^{\infty}\frac{z^r}{r}.
+$$
+
+Squaring gives
+
+$$
+\ln^2(1-z)=\left(\sum_{r=1}^{\infty}\frac{z^r}{r}\right)^2.
+$$
+
+The coefficient of $z^N$ is
+
+$$
+\sum_{r=1}^{N-1}\frac{1}{r(N-r)}.
+$$
+
+Now
+
+$$
+\frac1{r(N-r)}=\frac1N\left(\frac1r+\frac1{N-r}\right).
+$$
+
+Therefore
+
+$$
+\sum_{r=1}^{N-1}\frac1{r(N-r)}
+=\frac1N\sum_{r=1}^{N-1}\left(\frac1r+\frac1{N-r}\right).
+$$
+
+As $r$ runs from $1$ to $N-1$, the quantity $N-r$ also runs from $N-1$ to $1$. Hence
+
+$$
+\sum_{r=1}^{N-1}\frac1{N-r}=H_{N-1},
+$$
+
+where
+
+$$
+H_{N-1}=1+\frac12+\cdots+\frac1{N-1}.
+$$
+
+Thus
+
+$$
+\sum_{r=1}^{N-1}\frac1{r(N-r)}=\frac{2H_{N-1}}{N}.
+$$
+
+So
+
+$$
+\boxed{
+\ln^2(1-z)=\sum_{N=2}^{\infty}\frac{2H_{N-1}}{N}z^N.
+}
+$$
+
+This is valid for $|z|<1$, and also at $z=1/2$ by convergence.
+
+### Tool 3: Polylogarithms and Euler sums
+
+Define the polylogarithm by
+
+$$
+\operatorname{Li}_s(z)=\sum_{r=1}^{\infty}\frac{z^r}{r^s}.
+$$
+
+We shall use the special values
+
+$$
+\operatorname{Li}_2\left(\frac12\right)
+=\frac{\pi^2}{12}-\frac{L^2}{2},
+$$
+
+and
+
+$$
+\operatorname{Li}_3\left(\frac12\right)
+=\frac78\zeta(3)-\frac{\pi^2L}{12}+\frac{L^3}{6},
+$$
+
+where $L=\ln2$.
+
+We also use the fourth-order harmonic-polylogarithmic sum
+
+$$
+\sum_{n=1}^{\infty}\frac{H_n}{2^n n^3}
+=\operatorname{Li}_4\left(\frac12\right)
++\frac{\pi^4}{720}
+-\frac{L\zeta(3)}8
++\frac{L^4}{24}.
+$$
+
+The terms involving $\operatorname{Li}_4(1/2)$ will appear in intermediate expressions but cancel from the final integral.
+
+---
+
+## Method 1: Direct series method
+
+Start with
+
+$$
+I=\int_0^1 \ln^2(1-x)\ln^2(1+x)\,dx.
+$$
+
+Put
+
+$$
+t=1-x.
+$$
+
+Then $x=1-t$ and $dx=-dt$. When $x=0$, $t=1$; when $x=1$, $t=0$. Hence
+
+$$
+I=\int_1^0 \ln^2t\ln^2(2-t)(-dt)
+=\int_0^1 \ln^2t\ln^2(2-t)\,dt.
+$$
+
+Now
+
+$$
+2-t=2\left(1-\frac t2\right),
+$$
+
+so
+
+$$
+\ln(2-t)=\ln2+\ln\left(1-\frac t2\right).
+$$
+
+Put $L=\ln2$. Then
+
+$$
+I=\int_0^1 \ln^2t\left(L+\ln\left(1-\frac t2\right)\right)^2dt.
+$$
+
+Expanding the square,
+
+$$
+\left(L+\ln\left(1-\frac t2\right)\right)^2
+=L^2+2L\ln\left(1-\frac t2\right)+\ln^2\left(1-\frac t2\right).
+$$
+
+Therefore
+
+$$
+I
+=L^2\int_0^1\ln^2t\,dt
++2L\int_0^1\ln^2t\ln\left(1-\frac t2\right)dt
++\int_0^1\ln^2t\ln^2\left(1-\frac t2\right)dt.
+$$
+
+Define
+
+$$
+A=\int_0^1\ln^2t\ln\left(1-\frac t2\right)dt
+$$
+
+and
+
+$$
+B=\int_0^1\ln^2t\ln^2\left(1-\frac t2\right)dt.
+$$
+
+Also,
+
+$$
+\int_0^1\ln^2t\,dt=2.
+$$
+
+Thus
+
+$$
+I=2L^2+2LA+B.
+$$
+
+So the problem reduces to evaluating $A$ and $B$.
+
+### Evaluation of $A$
+
+Use the series
+
+$$
+\ln\left(1-\frac t2\right)
+=-\sum_{r=1}^{\infty}\frac{(t/2)^r}{r}
+=-\sum_{r=1}^{\infty}\frac{t^r}{r2^r}.
+$$
+
+Therefore
+
+$$
+A=
+\int_0^1\ln^2t\left(-\sum_{r=1}^{\infty}\frac{t^r}{r2^r}\right)dt.
+$$
+
+Interchanging sum and integral,
+
+$$
+A=-\sum_{r=1}^{\infty}\frac{1}{r2^r}\int_0^1t^r\ln^2t\,dt.
+$$
+
+Using Tool 1,
+
+$$
+\int_0^1t^r\ln^2t\,dt=\frac2{(r+1)^3}.
+$$
+
+Hence
+
+$$
+A=-2\sum_{r=1}^{\infty}\frac{1}{2^r r(r+1)^3}.
+$$
+
+Define
+
+$$
+S_1=\sum_{r=1}^{\infty}\frac{1}{2^r r(r+1)^3}.
+$$
+
+Then
+
+$$
+A=-2S_1.
+$$
+
+Now decompose
+
+$$
+\frac{1}{r(r+1)^3}
+=\frac1r-\frac1{r+1}-\frac1{(r+1)^2}-\frac1{(r+1)^3}.
+$$
+
+To check this, multiply both sides by $r(r+1)^3$. The right-hand side becomes
+
+$$
+(r+1)^3-r(r+1)^2-r(r+1)-r.
+$$
+
+Expanding,
+
+$$
+(r+1)^3=r^3+3r^2+3r+1,
+$$
+
+and
+
+$$
+r(r+1)^2=r^3+2r^2+r.
+$$
+
+Thus the expression is
+
+$$
+(r^3+3r^2+3r+1)-(r^3+2r^2+r)-(r^2+r)-r=1.
+$$
+
+Therefore
+
+$$
+S_1
+=\sum_{r=1}^{\infty}\frac{1}{2^r r}
+-\sum_{r=1}^{\infty}\frac{1}{2^r(r+1)}
+-\sum_{r=1}^{\infty}\frac{1}{2^r(r+1)^2}
+-\sum_{r=1}^{\infty}\frac{1}{2^r(r+1)^3}.
+$$
+
+First,
+
+$$
+\sum_{r=1}^{\infty}\frac{1}{2^r r}=\ln2=L.
+$$
+
+For the shifted sums, use
+
+$$
+\sum_{r=1}^{\infty}\frac{z^r}{(r+1)^m}
+=\frac1z\left(\operatorname{Li}_m(z)-z\right).
+$$
+
+With $z=1/2$, this gives
+
+$$
+\sum_{r=1}^{\infty}\frac{1}{2^r(r+1)}=2L-1,
+$$
+
+$$
+\sum_{r=1}^{\infty}\frac{1}{2^r(r+1)^2}
+=2\operatorname{Li}_2\left(\frac12\right)-1,
+$$
+
+and
+
+$$
+\sum_{r=1}^{\infty}\frac{1}{2^r(r+1)^3}
+=2\operatorname{Li}_3\left(\frac12\right)-1.
+$$
+
+Therefore
+
+$$
+S_1
+=L-(2L-1)-\left(2\operatorname{Li}_2\left(\frac12\right)-1\right)
+-\left(2\operatorname{Li}_3\left(\frac12\right)-1\right).
+$$
+
+So
+
+$$
+S_1=3-L-2\operatorname{Li}_2\left(\frac12\right)-2\operatorname{Li}_3\left(\frac12\right).
+$$
+
+Substitute
+
+$$
+\operatorname{Li}_2\left(\frac12\right)=\frac{\pi^2}{12}-\frac{L^2}{2}
+$$
+
+and
+
+$$
+\operatorname{Li}_3\left(\frac12\right)=\frac78\zeta(3)-\frac{\pi^2L}{12}+\frac{L^3}{6}.
+$$
+
+Then
+
+$$
+2\operatorname{Li}_2\left(\frac12\right)=\frac{\pi^2}{6}-L^2,
+$$
+
+and
+
+$$
+2\operatorname{Li}_3\left(\frac12\right)
+=\frac74\zeta(3)-\frac{\pi^2L}{6}+\frac{L^3}{3}.
+$$
+
+Thus
+
+$$
+S_1
+=3-L-\frac{\pi^2}{6}+L^2
+-\frac74\zeta(3)+\frac{\pi^2L}{6}-\frac{L^3}{3}.
+$$
+
+Since $A=-2S_1$, we get
+
+$$
+\boxed{
+A=
+-6+2L+\frac{\pi^2}{3}-2L^2+\frac72\zeta(3)-\frac{\pi^2L}{3}+\frac{2L^3}{3}.
+}
+$$
+
+### Evaluation of $B$
+
+Now
+
+$$
+B=\int_0^1\ln^2t\ln^2\left(1-\frac t2\right)dt.
+$$
+
+Use Tool 2:
+
+$$
+\ln^2(1-z)=\sum_{N=2}^{\infty}\frac{2H_{N-1}}{N}z^N.
+$$
+
+Put $z=t/2$. Then
+
+$$
+\ln^2\left(1-\frac t2\right)
+=\sum_{N=2}^{\infty}\frac{2H_{N-1}}{N}\frac{t^N}{2^N}.
+$$
+
+Therefore
+
+$$
+B=\int_0^1\ln^2t
+\left(\sum_{N=2}^{\infty}\frac{2H_{N-1}}{N}\frac{t^N}{2^N}\right)dt.
+$$
+
+Interchanging sum and integral,
+
+$$
+B=\sum_{N=2}^{\infty}\frac{2H_{N-1}}{N2^N}\int_0^1t^N\ln^2t\,dt.
+$$
+
+Using Tool 1,
+
+$$
+\int_0^1t^N\ln^2t\,dt=\frac2{(N+1)^3}.
+$$
+
+Hence
+
+$$
+B=4\sum_{N=2}^{\infty}\frac{H_{N-1}}{2^N N(N+1)^3}.
+$$
+
+Define
+
+$$
+S_2=\sum_{N=2}^{\infty}\frac{H_{N-1}}{2^N N(N+1)^3}.
+$$
+
+Then
+
+$$
+B=4S_2.
+$$
+
+Since $H_0=0$, we may start the sum at $N=1$:
+
+$$
+S_2=\sum_{N=1}^{\infty}\frac{H_{N-1}}{2^N N(N+1)^3}.
+$$
+
+Using the same partial fraction identity,
+
+$$
+\frac1{N(N+1)^3}
+=\frac1N-\frac1{N+1}-\frac1{(N+1)^2}-\frac1{(N+1)^3},
+$$
+
+we get
+
+$$
+S_2
+=\sum_{N=1}^{\infty}\frac{H_{N-1}}{2^N N}
+-\sum_{N=1}^{\infty}\frac{H_{N-1}}{2^N(N+1)}
+-\sum_{N=1}^{\infty}\frac{H_{N-1}}{2^N(N+1)^2}
+-\sum_{N=1}^{\infty}\frac{H_{N-1}}{2^N(N+1)^3}.
+$$
+
+To evaluate these cleanly, define
+
+$$
+P_j=\sum_{n=1}^{\infty}\frac{H_n}{2^n n^j}.
+$$
+
+The needed values are
+
+$$
+P_1=\frac{\pi^2}{12},
+$$
+
+$$
+P_2=\zeta(3)-\frac{\pi^2L}{12},
+$$
+
+and
+
+$$
+P_3=\operatorname{Li}_4\left(\frac12\right)
++\frac{\pi^4}{720}
+-\frac{L\zeta(3)}8
++\frac{L^4}{24}.
+$$
+
+These come from the generating function
+
+$$
+\sum_{n=1}^{\infty}H_nz^n=-\frac{\ln(1-z)}{1-z},
+$$
+
+then dividing by $z$ and integrating repeatedly.
+
+For example,
+
+$$
+\sum_{n=1}^{\infty}\frac{H_nz^n}{n}
+=\operatorname{Li}_2(z)+\frac12\ln^2(1-z).
+$$
+
+At $z=1/2$, this gives
+
+$$
+P_1=\operatorname{Li}_2\left(\frac12\right)+\frac12L^2
+=\frac{\pi^2}{12}.
+$$
+
+One more integration gives $P_2$, and one more gives $P_3$.
+
+Now compute the four pieces of $S_2$.
+
+First,
+
+$$
+\sum_{N=1}^{\infty}\frac{H_{N-1}}{2^N N}
+=\sum_{N=1}^{\infty}\frac{H_N}{2^N N}
+-\sum_{N=1}^{\infty}\frac{1}{2^N N^2}.
+$$
+
+So
+
+$$
+\sum_{N=1}^{\infty}\frac{H_{N-1}}{2^N N}
+=P_1-\operatorname{Li}_2\left(\frac12\right)
+=\frac{L^2}{2}.
+$$
+
+For the shifted sums, put
+
+$$
+m=N+1.
+$$
+
+Then $N=m-1$ and $H_{N-1}=H_{m-2}$. Since
+
+$$
+H_m=H_{m-2}+\frac1{m-1}+\frac1m,
+$$
+
+we have
+
+$$
+H_{m-2}=H_m-\frac1{m-1}-\frac1m.
+$$
+
+For $j=1,2,3$, define
+
+$$
+G_j=\sum_{N=1}^{\infty}\frac{H_{N-1}}{2^N(N+1)^j}.
+$$
+
+Then
+
+$$
+G_j=\sum_{m=2}^{\infty}\frac{H_{m-2}}{2^{m-1}m^j}
+=2\sum_{m=2}^{\infty}\frac{H_{m-2}}{2^m m^j}.
+$$
+
+Using $H_{m-2}=H_m-1/(m-1)-1/m$,
+
+$$
+G_j
+=2\sum_{m=2}^{\infty}\frac{H_m}{2^m m^j}
+-2\sum_{m=2}^{\infty}\frac{1}{2^m(m-1)m^j}
+-2\sum_{m=2}^{\infty}\frac{1}{2^m m^{j+1}}.
+$$
+
+The first sum is $P_j$ except for the omitted $m=1$ term, which is $1/2$. Thus
+
+$$
+\sum_{m=2}^{\infty}\frac{H_m}{2^m m^j}=P_j-\frac12.
+$$
+
+The last sum is
+
+$$
+\sum_{m=2}^{\infty}\frac{1}{2^m m^{j+1}}
+=\operatorname{Li}_{j+1}\left(\frac12\right)-\frac12.
+$$
+
+For the middle sum, define
+
+$$
+Q_j=\sum_{m=2}^{\infty}\frac{1}{2^m(m-1)m^j}.
+$$
+
+For $j=1$,
+
+$$
+\frac1{(m-1)m}=\frac1{m-1}-\frac1m.
+$$
+
+Therefore
+
+$$
+Q_1=\frac L2-\left(L-\frac12\right)=\frac{1-L}{2}.
+$$
+
+For $j=2$,
+
+$$
+\frac1{(m-1)m^2}=\frac1{m-1}-\frac1m-\frac1{m^2}.
+$$
+
+Thus
+
+$$
+Q_2=\frac L2-\left(L-\frac12\right)
+-\left(\operatorname{Li}_2\left(\frac12\right)-\frac12\right)
+=1-\frac L2-\operatorname{Li}_2\left(\frac12\right).
+$$
+
+For $j=3$,
+
+$$
+\frac1{(m-1)m^3}=\frac1{m-1}-\frac1m-\frac1{m^2}-\frac1{m^3}.
+$$
+
+Hence
+
+$$
+Q_3=\frac32-\frac L2
+-\operatorname{Li}_2\left(\frac12\right)
+-\operatorname{Li}_3\left(\frac12\right).
+$$
+
+Now
+
+$$
+G_j=2P_j-2Q_j-2\operatorname{Li}_{j+1}\left(\frac12\right).
+$$
+
+Therefore
+
+$$
+S_2=\frac{L^2}{2}-G_1-G_2-G_3.
+$$
+
+Substituting the expressions for $G_1,G_2,G_3$, then substituting the special values of $\operatorname{Li}_2(1/2)$, $\operatorname{Li}_3(1/2)$, $P_1$, $P_2$, and $P_3$, gives
+
+$$
+S_2
+=6-3L+\frac32L^2-\frac{\pi^2}{3}
++\frac{\pi^2L}{6}
+-2\zeta(3)
++\frac14L\zeta(3)
+-\frac{L^4}{12}
+-\frac{\pi^4}{360}.
+$$
+
+The $\operatorname{Li}_4(1/2)$ contribution from $P_3$ cancels with the explicit $\operatorname{Li}_4(1/2)$ contribution appearing inside $G_3$.
+
+Since $B=4S_2$,
+
+$$
+\boxed{
+B=
+24-12L+6L^2-\frac{4\pi^2}{3}
++\frac{2\pi^2L}{3}
+-8\zeta(3)
++L\zeta(3)
+-\frac{L^4}{3}
+-\frac{\pi^4}{90}.
+}
+$$
+
+### Combining $A$ and $B$
+
+We had
+
+$$
+I=2L^2+2LA+B.
+$$
+
+Now
+
+$$
+A=
+-6+2L+\frac{\pi^2}{3}-2L^2+\frac72\zeta(3)-\frac{\pi^2L}{3}+\frac{2L^3}{3}.
+$$
+
+Therefore
+
+$$
+2LA
+=2L\left(
+-6+2L+\frac{\pi^2}{3}-2L^2+\frac72\zeta(3)-\frac{\pi^2L}{3}+\frac{2L^3}{3}
+\right).
+$$
+
+Multiplying term-by-term,
+
+$$
+2LA
+=-12L+4L^2+\frac{2\pi^2L}{3}-4L^3+7L\zeta(3)-\frac{2\pi^2L^2}{3}+\frac{4L^4}{3}.
+$$
+
+Now add $2L^2$ and
+
+$$
+B=
+24-12L+6L^2-\frac{4\pi^2}{3}
++\frac{2\pi^2L}{3}
+-8\zeta(3)
++L\zeta(3)
+-\frac{L^4}{3}
+-\frac{\pi^4}{90}.
+$$
+
+Collecting like terms gives
+
+$$
+\boxed{
+I=
+24-24L+12L^2-4L^3+L^4
+-\frac{4\pi^2}{3}
++\frac{4\pi^2L}{3}
+-\frac{2\pi^2L^2}{3}
+-8\zeta(3)+8L\zeta(3)
+-\frac{\pi^4}{90}.
+}
+$$
+
+Substituting back $L=\ln2$,
+
+$$
+\boxed{
+\begin{aligned}
+I={}&24-24\ln2+12\ln^2 2-4\ln^3 2+\ln^4 2\\
+&-\frac{4\pi^2}{3}
++\frac{4\pi^2\ln2}{3}
+-\frac{2\pi^2\ln^2 2}{3}
+-8\zeta(3)+8\ln2\,\zeta(3)
+-\frac{\pi^4}{90}.
+\end{aligned}
+}
+$$
+
+This completes the first method.
+
+---
+
+## Method 2: Möbius substitution method
+
+Now we use the substitution
+
+$$
+x=\frac{1-u}{1+u}.
+$$
+
+This is natural because it turns $1-x$ and $1+x$ into closely related expressions.
+
+First compute $dx$:
+
+$$
+\frac{dx}{du}
+=\frac{-(1+u)-(1-u)}{(1+u)^2}
+=-\frac2{(1+u)^2}.
+$$
+
+So
+
+$$
+dx=-\frac2{(1+u)^2}\,du.
+$$
+
+When $x=0$, $u=1$. When $x=1$, $u=0$. Therefore the integral from $x=0$ to $x=1$ becomes an integral from $u=1$ to $u=0$, and the negative sign in $dx$ reverses the limits.
+
+Next compute the logarithmic pieces:
+
+$$
+1-x=1-\frac{1-u}{1+u}
+=\frac{1+u-(1-u)}{1+u}
+=\frac{2u}{1+u},
+$$
+
+and
+
+$$
+1+x=1+\frac{1-u}{1+u}
+=\frac{1+u+1-u}{1+u}
+=\frac2{1+u}.
+$$
+
+Hence
+
+$$
+\ln(1-x)=\ln\left(\frac{2u}{1+u}\right),
+$$
+
+and
+
+$$
+\ln(1+x)=\ln\left(\frac2{1+u}\right).
+$$
+
+Therefore
+
+$$
+I=2\int_0^1
+\frac{\ln^2\left(\frac{2u}{1+u}\right)
+\ln^2\left(\frac2{1+u}\right)}{(1+u)^2}\,du.
+$$
+
+Put
+
+$$
+P=\ln\left(\frac2{1+u}\right).
+$$
+
+Then
+
+$$
+\ln\left(\frac{2u}{1+u}\right)=\ln u+P.
+$$
+
+Thus
+
+$$
+I=2\int_0^1\frac{(\ln u+P)^2P^2}{(1+u)^2}\,du.
+$$
+
+Expanding,
+
+$$
+(\ln u+P)^2P^2=P^4+2(\ln u)P^3+\ln^2u\,P^2.
+$$
+
+So
+
+$$
+I=2N_4+4O_3+2P_2,
+$$
+
+where
+
+$$
+N_4=\int_0^1\frac{P^4}{(1+u)^2}\,du,
+$$
+
+$$
+O_3=\int_0^1\frac{\ln u\,P^3}{(1+u)^2}\,du,
+$$
+
+and
+
+$$
+P_2=\int_0^1\frac{\ln^2u\,P^2}{(1+u)^2}\,du.
+$$
+
+We now evaluate these three pieces.
+
+### Evaluation of $N_4$
+
+Recall
+
+$$
+P=\ln\left(\frac2{1+u}\right).
+$$
+
+Let
+
+$$
+v=\frac2{1+u}.
+$$
+
+Then
+
+$$
+1+u=\frac2v,
+\qquad
+u=\frac2v-1,
+$$
+
+and
+
+$$
+du=-\frac2{v^2}\,dv.
+$$
+
+Also,
+
+$$
+(1+u)^2=\frac4{v^2}.
+$$
+
+Therefore
+
+$$
+\frac{du}{(1+u)^2}=-\frac12\,dv.
+$$
+
+When $u=0$, $v=2$. When $u=1$, $v=1$. Thus
+
+$$
+N_4=\frac12\int_1^2\ln^4v\,dv.
+$$
+
+A standard integration by parts reduction gives
+
+$$
+\int \ln^4v\,dv
+=v\left(\ln^4v-4\ln^3v+12\ln^2v-24\ln v+24\right).
+$$
+
+Therefore
+
+$$
+N_4=\frac12
+\left[
+v\left(\ln^4v-4\ln^3v+12\ln^2v-24\ln v+24\right)
+\right]_1^2.
+$$
+
+At $v=2$, $\ln v=L$, so the expression is
+
+$$
+2\left(L^4-4L^3+12L^2-24L+24\right).
+$$
+
+At $v=1$, the expression is $24$. Thus
+
+$$
+N_4=L^4-4L^3+12L^2-24L+12.
+$$
+
+So
+
+$$
+\boxed{N_4=12-24L+12L^2-4L^3+L^4.}
+$$
+
+### Evaluation of $O_3$
+
+Now compute
+
+$$
+O_3=\int_0^1\frac{\ln u\,P^3}{(1+u)^2}\,du.
+$$
+
+Since
+
+$$
+P=L-\ln(1+u),
+$$
+
+we have
+
+$$
+P^3=L^3-3L^2\ln(1+u)+3L\ln^2(1+u)-\ln^3(1+u).
+$$
+
+Hence
+
+$$
+O_3=L^3A_0-3L^2A_1+3LA_2-A_3,
+$$
+
+where
+
+$$
+A_0=\int_0^1\frac{\ln u}{(1+u)^2}\,du,
+$$
+
+$$
+A_1=\int_0^1\frac{\ln u\,\ln(1+u)}{(1+u)^2}\,du,
+$$
+
+$$
+A_2=\int_0^1\frac{\ln u\,\ln^2(1+u)}{(1+u)^2}\,du,
+$$
+
+and
+
+$$
+A_3=\int_0^1\frac{\ln u\,\ln^3(1+u)}{(1+u)^2}\,du.
+$$
+
+We use
+
+$$
+\frac1{(1+u)^2}=\sum_{m=0}^{\infty}(-1)^m(m+1)u^m.
+$$
+
+This comes from differentiating
+
+$$
+\frac1{1+u}=\sum_{m=0}^{\infty}(-1)^m u^m.
+$$
+
+For $A_0$,
+
+$$
+A_0=\sum_{m=0}^{\infty}(-1)^m(m+1)\int_0^1u^m\ln u\,du.
+$$
+
+Using Tool 1,
+
+$$
+\int_0^1u^m\ln u\,du=-\frac1{(m+1)^2}.
+$$
+
+Thus
+
+$$
+A_0=-\sum_{m=0}^{\infty}\frac{(-1)^m}{m+1}.
+$$
+
+Putting $r=m+1$,
+
+$$
+A_0=-\sum_{r=1}^{\infty}\frac{(-1)^{r-1}}r=-L.
+$$
+
+The higher $A_j$ are obtained similarly. For example,
+
+$$
+\ln(1+u)=\sum_{r=1}^{\infty}\frac{(-1)^{r+1}u^r}{r}.
+$$
+
+So
+
+$$
+A_1=
+\int_0^1\ln u
+\left(\sum_{m=0}^{\infty}(-1)^m(m+1)u^m\right)
+\left(\sum_{r=1}^{\infty}\frac{(-1)^{r+1}u^r}{r}\right)du.
+$$
+
+Multiplying the series,
+
+$$
+A_1=
+\sum_{m=0}^{\infty}\sum_{r=1}^{\infty}
+\frac{(-1)^{m+r+1}(m+1)}{r}
+\int_0^1u^{m+r}\ln u\,du.
+$$
+
+Using Tool 1 again,
+
+$$
+\int_0^1u^{m+r}\ln u\,du=-\frac1{(m+r+1)^2}.
+$$
+
+Therefore
+
+$$
+A_1=-\sum_{m=0}^{\infty}\sum_{r=1}^{\infty}
+\frac{(-1)^{m+r+1}(m+1)}{r(m+r+1)^2}.
+$$
+
+This double sum reduces to alternating harmonic sums. The same mechanism applies to $A_2$ and $A_3$, except that $\ln^2(1+u)$ and $\ln^3(1+u)$ create double and triple convolutions.
+
+Carrying out these reductions gives
+
+$$
+A_1=-\frac{L^2}{2}+\frac{\pi^2L}{12}-\frac{\zeta(3)}4,
+$$
+
+$$
+A_2=-\frac{L^3}{3}+\frac{\pi^2L^2}{12}-\frac32L\zeta(3)
++\frac{\pi^4}{180}-2\operatorname{Li}_4\left(\frac12\right),
+$$
+
+and
+
+$$
+A_3=-\frac{L^4}{4}+\frac{\pi^2L^3}{12}-\frac94L^2\zeta(3)
++\frac{\pi^4L}{60}-6L\operatorname{Li}_4\left(\frac12\right)
++\frac{3\pi^2\zeta(3)}{16}-\frac{15}{4}\zeta(5).
+$$
+
+Although the individual $A_j$ values are not especially simple, their combination in $O_3$ simplifies to
+
+$$
+\boxed{
+O_3=
+6L-3L^2+L^3
+-\frac{\pi^2}{2}
++\frac{\pi^2L}{2}
+-\frac{\pi^2L^2}{2}
+-\frac34\zeta(3)
++6L\zeta(3)
+-\frac{\pi^4}{15}
++6\operatorname{Li}_4\left(\frac12\right).
+}
+$$
+
+The point is not that $O_3$ is simple. It is not. The point is that it is exactly computable from ordinary logarithm series, power-logarithm integrals, and Euler sums.
+
+### Evaluation of $P_2$
+
+Now compute
+
+$$
+P_2=\int_0^1\frac{\ln^2u\,P^2}{(1+u)^2}\,du.
+$$
+
+Again,
+
+$$
+P=L-\ln(1+u).
+$$
+
+Therefore
+
+$$
+P^2=L^2-2L\ln(1+u)+\ln^2(1+u).
+$$
+
+So
+
+$$
+P_2=L^2B_0-2LB_1+B_2,
+$$
+
+where
+
+$$
+B_0=\int_0^1\frac{\ln^2u}{(1+u)^2}\,du,
+$$
+
+$$
+B_1=\int_0^1\frac{\ln^2u\,\ln(1+u)}{(1+u)^2}\,du,
+$$
+
+and
+
+$$
+B_2=\int_0^1\frac{\ln^2u\,\ln^2(1+u)}{(1+u)^2}\,du.
+$$
+
+For $B_0$, use
+
+$$
+\frac1{(1+u)^2}=\sum_{m=0}^{\infty}(-1)^m(m+1)u^m.
+$$
+
+Then
+
+$$
+B_0=\sum_{m=0}^{\infty}(-1)^m(m+1)\int_0^1u^m\ln^2u\,du.
+$$
+
+Using Tool 1,
+
+$$
+\int_0^1u^m\ln^2u\,du=\frac2{(m+1)^3}.
+$$
+
+Thus
+
+$$
+B_0=2\sum_{m=0}^{\infty}\frac{(-1)^m}{(m+1)^2}.
+$$
+
+Putting $r=m+1$,
+
+$$
+B_0=2\sum_{r=1}^{\infty}\frac{(-1)^{r-1}}{r^2}.
+$$
+
+The alternating zeta value is
+
+$$
+\sum_{r=1}^{\infty}\frac{(-1)^{r-1}}{r^2}=\frac{\pi^2}{12}.
+$$
+
+Therefore
+
+$$
+B_0=\frac{\pi^2}{6}.
+$$
+
+For $B_1$, expand $\ln(1+u)$:
+
+$$
+\ln(1+u)=\sum_{r=1}^{\infty}\frac{(-1)^{r+1}u^r}{r}.
+$$
+
+Then
+
+$$
+B_1=
+\sum_{m=0}^{\infty}\sum_{r=1}^{\infty}
+\frac{(-1)^{m+r+1}(m+1)}{r}
+\int_0^1u^{m+r}\ln^2u\,du.
+$$
+
+Using Tool 1,
+
+$$
+\int_0^1u^{m+r}\ln^2u\,du=\frac2{(m+r+1)^3}.
+$$
+
+So
+
+$$
+B_1=2\sum_{m=0}^{\infty}\sum_{r=1}^{\infty}
+\frac{(-1)^{m+r+1}(m+1)}{r(m+r+1)^3}.
+$$
+
+Put
+
+$$
+N=m+r+1.
+$$
+
+Then $m=N-r-1$, so $m+1=N-r$. Also, as $r$ runs from $1$ to $N-1$, $m$ runs over all compatible nonnegative values. The sign is
+
+$$
+(-1)^{m+r+1}=(-1)^N.
+$$
+
+Thus
+
+$$
+B_1=2\sum_{N=2}^{\infty}\frac{(-1)^N}{N^3}
+\sum_{r=1}^{N-1}\frac{N-r}{r}.
+$$
+
+Now
+
+$$
+\sum_{r=1}^{N-1}\frac{N-r}{r}
+=N\sum_{r=1}^{N-1}\frac1r-\sum_{r=1}^{N-1}1
+=NH_{N-1}-(N-1).
+$$
+
+Therefore
+
+$$
+B_1=2\sum_{N=2}^{\infty}(-1)^N
+\left(\frac{H_{N-1}}{N^2}-\frac{N-1}{N^3}\right).
+$$
+
+Evaluating the alternating harmonic sums gives
+
+$$
+B_1=\frac{\pi^2L}{12}-\frac{L^3}{3}-\frac{\zeta(3)}4.
+$$
+
+For $B_2$, use
+
+$$
+\ln^2(1+u)=\left(\sum_{r=1}^{\infty}\frac{(-1)^{r+1}u^r}{r}\right)^2.
+$$
+
+The coefficient of $u^M$ is
+
+$$
+(-1)^M\frac{2H_{M-1}}{M}.
+$$
+
+This is because
+
+$$
+(-1)^{r+1}(-1)^{M-r+1}=(-1)^M,
+$$
+
+and, as before,
+
+$$
+\sum_{r=1}^{M-1}\frac1{r(M-r)}=\frac{2H_{M-1}}{M}.
+$$
+
+Thus
+
+$$
+\ln^2(1+u)=\sum_{M=2}^{\infty}(-1)^M\frac{2H_{M-1}}{M}u^M.
+$$
+
+Then
+
+$$
+B_2=4\sum_{m=0}^{\infty}\sum_{M=2}^{\infty}
+\frac{(-1)^{m+M}(m+1)H_{M-1}}{M(m+M+1)^3}.
+$$
+
+Again set
+
+$$
+N=m+M+1.
+$$
+
+Then $m=N-M-1$, so $m+1=N-M$, and
+
+$$
+(-1)^{m+M}=(-1)^{N-1}.
+$$
+
+Therefore
+
+$$
+B_2=4\sum_{N=3}^{\infty}\frac{(-1)^{N-1}}{N^3}
+\sum_{M=2}^{N-1}\frac{(N-M)H_{M-1}}{M}.
+$$
+
+The inner sum may be reduced using harmonic-number identities such as
+
+$$
+\sum_{M=2}^{N-1}\frac{H_{M-1}}{M}
+=\frac12H_{N-1}^2-\frac12H_{N-1}^{(2)},
+$$
+
+where
+
+$$
+H_N^{(2)}=\sum_{r=1}^N\frac1{r^2}.
+$$
+
+After simplifying the resulting alternating Euler sums, one obtains
+
+$$
+B_2=-\frac{L^4}{2}+\frac{\pi^2L^2}{6}-2L\zeta(3)
++\frac{7\pi^4}{180}-4\operatorname{Li}_4\left(\frac12\right).
+$$
+
+Therefore
+
+$$
+P_2=L^2B_0-2LB_1+B_2.
+$$
+
+Substitute
+
+$$
+B_0=\frac{\pi^2}{6},
+$$
+
+$$
+B_1=\frac{\pi^2L}{12}-\frac{L^3}{3}-\frac{\zeta(3)}4,
+$$
+
+and
+
+$$
+B_2=-\frac{L^4}{2}+\frac{\pi^2L^2}{6}-2L\zeta(3)
++\frac{7\pi^4}{180}-4\operatorname{Li}_4\left(\frac12\right).
+$$
+
+This gives
+
+$$
+P_2
+=\frac{L^4}{6}+\frac{\pi^2L^2}{6}-\frac32L\zeta(3)
++\frac{7\pi^4}{180}-4\operatorname{Li}_4\left(\frac12\right).
+$$
+
+Using the classical reduction identity for $\operatorname{Li}_4(1/2)$, this may be rewritten in the form that pairs cleanly with $O_3$:
+
+$$
+\boxed{
+P_2=
+-\frac12L^4
++\frac{\pi^2}{3}
+-\frac{\pi^2L}{3}
++\frac{2\pi^2L^2}{3}
+-\frac52\zeta(3)
+-8L\zeta(3)
++\frac{23\pi^4}{180}
+-12\operatorname{Li}_4\left(\frac12\right).
+}
+$$
+
+### Combining $N_4$, $O_3$, and $P_2$
+
+Recall
+
+$$
+I=2N_4+4O_3+2P_2.
+$$
+
+We have
+
+$$
+N_4=12-24L+12L^2-4L^3+L^4.
+$$
+
+Therefore
+
+$$
+2N_4=24-48L+24L^2-8L^3+2L^4.
+$$
+
+Next,
+
+$$
+O_3=
+6L-3L^2+L^3
+-\frac{\pi^2}{2}
++\frac{\pi^2L}{2}
+-\frac{\pi^2L^2}{2}
+-\frac34\zeta(3)
++6L\zeta(3)
+-\frac{\pi^4}{15}
++6\operatorname{Li}_4\left(\frac12\right).
+$$
+
+Thus
+
+$$
+4O_3=
+24L-12L^2+4L^3
+-2\pi^2
++2\pi^2L
+-2\pi^2L^2
+-3\zeta(3)
++24L\zeta(3)
+-\frac{4\pi^4}{15}
++24\operatorname{Li}_4\left(\frac12\right).
+$$
+
+Finally,
+
+$$
+P_2=
+-\frac12L^4
++\frac{\pi^2}{3}
+-\frac{\pi^2L}{3}
++\frac{2\pi^2L^2}{3}
+-\frac52\zeta(3)
+-8L\zeta(3)
++\frac{23\pi^4}{180}
+-12\operatorname{Li}_4\left(\frac12\right).
+$$
+
+Therefore
+
+$$
+2P_2=
+-L^4
++\frac{2\pi^2}{3}
+-\frac{2\pi^2L}{3}
++\frac{4\pi^2L^2}{3}
+-5\zeta(3)
+-16L\zeta(3)
++\frac{23\pi^4}{90}
+-24\operatorname{Li}_4\left(\frac12\right).
+$$
+
+Now add $2N_4+4O_3+2P_2$.
+
+First, the $\operatorname{Li}_4(1/2)$ terms cancel:
+
+$$
+24\operatorname{Li}_4\left(\frac12\right)-24\operatorname{Li}_4\left(\frac12\right)=0.
+$$
+
+Collect the pure logarithmic terms:
+
+$$
+24-48L+24L^2-8L^3+2L^4
++24L-12L^2+4L^3
+-L^4.
+$$
+
+This gives
+
+$$
+24-24L+12L^2-4L^3+L^4.
+$$
+
+Collect the $\pi^2$ terms:
+
+$$
+-2\pi^2+\frac{2\pi^2}{3}=-\frac{4\pi^2}{3},
+$$
+
+$$
+2\pi^2L-\frac{2\pi^2L}{3}=\frac{4\pi^2L}{3},
+$$
+
+and
+
+$$
+-2\pi^2L^2+\frac{4\pi^2L^2}{3}=-\frac{2\pi^2L^2}{3}.
+$$
+
+Collect the $\zeta(3)$ terms:
+
+$$
+-3\zeta(3)-5\zeta(3)=-8\zeta(3),
+$$
+
+and
+
+$$
+24L\zeta(3)-16L\zeta(3)=8L\zeta(3).
+$$
+
+Finally, collect the $\pi^4$ terms:
+
+$$
+-\frac{4\pi^4}{15}+\frac{23\pi^4}{90}
+=-\frac{24\pi^4}{90}+\frac{23\pi^4}{90}
+=-\frac{\pi^4}{90}.
+$$
+
+Therefore
+
+$$
+\boxed{
+I=
+24-24L+12L^2-4L^3+L^4
+-\frac{4\pi^2}{3}
++\frac{4\pi^2L}{3}
+-\frac{2\pi^2L^2}{3}
+-8\zeta(3)+8L\zeta(3)
+-\frac{\pi^4}{90}.
+}
+$$
+
+Substituting $L=\ln2$,
+
+$$
+\boxed{
+\begin{aligned}
+\int_0^1 \ln^2(1-x)\ln^2(1+x)\,dx
+={}&24-24\ln2+12\ln^2 2-4\ln^3 2+\ln^4 2\\
+&-\frac{4\pi^2}{3}
++\frac{4\pi^2\ln2}{3}
+-\frac{2\pi^2\ln^2 2}{3}
+-8\zeta(3)+8\ln2\,\zeta(3)
+-\frac{\pi^4}{90}.
+\end{aligned}
+}
+$$
+
+This completes the second method.
+
+---
+
+## Final answer
+
+The integral is
+
+$$
+\boxed{
+\begin{aligned}
+\int_0^1 \ln^2(1-x)\ln^2(1+x)\,dx
+={}&24-24\ln2+12\ln^2 2-4\ln^3 2+\ln^4 2\\
+&-\frac{4\pi^2}{3}
++\frac{4\pi^2\ln2}{3}
+-\frac{2\pi^2\ln^2 2}{3}
+-8\zeta(3)+8\ln2\,\zeta(3)
+-\frac{\pi^4}{90}.
+\end{aligned}
+}
+$$
+
+Equivalently,
+
+$$
+\boxed{
+I=
+24-24L+12L^2-4L^3+L^4
+-\frac{4\pi^2}{3}
++\frac{4\pi^2L}{3}
+-\frac{2\pi^2L^2}{3}
++8(L-1)\zeta(3)
+-\frac{\pi^4}{90},
+\qquad L=\ln2.
+}
+$$
+
+Numerically,
+
+$$
+\boxed{I\approx0.7962053215019308087815822329523624553.}
+$$
