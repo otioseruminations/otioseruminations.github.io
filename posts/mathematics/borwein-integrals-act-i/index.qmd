@@ -22,7 +22,7 @@ $$
 \frac{\sin(ax)}{x}
 $$
 
-seems to have a problem at \(x=0\), because the denominator becomes \(0\). But the numerator also becomes \(0\), and the two zeros cancel each other in a very precise way.
+seems to have a problem at $x=0$, because the denominator becomes $0$. But the numerator also becomes $0$, and the two zeros cancel each other in a very precise way.
 
 Using the Taylor expansion
 
@@ -40,13 +40,13 @@ $$
 a-\frac{a^3x^2}{6}+\frac{a^5x^4}{120}-\cdots.
 $$
 
-So as \(x\to0\),
+So as $x\to0$,
 
 $$
 \frac{\sin(ax)}{x}\to a.
 $$
 
-Even better, if we divide by \(a\) as well, we get the normalized version
+Even better, if we divide by $a$ as well, we get the normalized version
 
 $$
 S_a(x)=\frac{\sin(ax)}{ax}.
@@ -122,11 +122,11 @@ $$
 
 has two competing forces inside it.
 
-The numerator \(\sin(ax)\) creates the wobble.
+The numerator $\sin(ax)$ creates the wobble.
 
-The denominator \(ax\) creates the squeeze.
+The denominator $ax$ creates the squeeze.
 
-As \(x\) grows, the sine wave keeps oscillating, but the denominator slowly crushes the height of those oscillations toward \(0\).
+As $x$ grows, the sine wave keeps oscillating, but the denominator slowly crushes the height of those oscillations toward $0$.
 
 ```{ojs}
 viewof a_wave = Inputs.range([0.2, 8], {
@@ -188,7 +188,7 @@ $$
 
 This is the first sign that the normalized sine fraction has a clean hidden structure.
 
-But there is one subtlety: this is not ordinary positive area. The curve goes above and below the \(x\)-axis. The final answer comes from cancellation between positive and negative waves.
+But there is one subtlety: this is not ordinary positive area. The curve goes above and below the $x$-axis. The final answer comes from cancellation between positive and negative waves.
 
 The next plot shows the accumulated area
 
@@ -196,7 +196,7 @@ $$
 A(R)=\int_0^R \frac{\sin(ax)}{ax}\,dx.
 $$
 
-As \(R\) grows, \(A(R)\) wobbles, but it slowly settles toward the predicted limit.
+As $R$ grows, $A(R)$ wobbles, but it slowly settles toward the predicted limit.
 
 ```{ojs}
 viewof a_area = Inputs.range([0.2, 5], {
@@ -235,7 +235,7 @@ Plot.plot({
 })
 ```
 
-For the chosen value of \(a\), the predicted limit is
+For the chosen value of $a$, the predicted limit is
 
 ```{ojs}
 html`<b>${fmt(areaLimit)}</b>`
@@ -253,7 +253,7 @@ $$
 \frac{1-\cos(ax)}{x^2}.
 $$
 
-At first glance, it also looks dangerous at \(x=0\). But again, Taylor expansion saves us.
+At first glance, it also looks dangerous at $x=0$. But again, Taylor expansion saves us.
 
 Since
 
@@ -291,7 +291,7 @@ $$
 E_a(x)\to \frac12.
 $$
 
-If we want a version that starts at \(1\), just multiply by \(2\):
+If we want a version that starts at $1$, just multiply by $2$:
 
 $$
 T_a(x)
@@ -305,7 +305,7 @@ $$
 T_a(0)=1.
 $$
 
-This \(T_a(x)\) is the cosine-difference cousin of the normalized sine fraction.
+This $T_a(x)$ is the cosine-difference cousin of the normalized sine fraction.
 
 The two are connected by the identity
 
@@ -366,7 +366,7 @@ $$
 \frac{\pi a}{2}.
 $$
 
-Dividing by \(a^2\), we get
+Dividing by $a^2$, we get
 
 $$
 \int_0^\infty
@@ -420,7 +420,7 @@ $$
 
 In other words, the larger scale controls the answer.
 
-If \(a\geq b\), then
+If $a\geq b$, then
 
 $$
 I(a,b)=\frac{\pi}{2a}.
@@ -484,13 +484,13 @@ Plot.line(twoData, {
 })
 ```
 
-Try fixing \(a=2\), then moving \(b\) from \(0.1\) up to \(2\). The exact value remains fixed at
+Try fixing $a=2$, then moving $b$ from $0.1$ up to $2$. The exact value remains fixed at
 
 $$
 \frac{\pi}{4}.
 $$
 
-Once \(b\) passes \(2\), the larger scale changes, and the answer changes.
+Once $b$ passes $2$, the larger scale changes, and the answer changes.
 
 This is the first real hint of the mystery that will drive Act II.
 
@@ -532,7 +532,7 @@ $$
 
 This looks more complicated than the two-sine-fraction formula, but it still has a clean piecewise structure.
 
-If \(a\geq b\), this simplifies to
+If $a\geq b$, this simplifies to
 
 $$
 K(a,b)
@@ -543,7 +543,7 @@ K(a,b)
 \right).
 $$
 
-The unit-normalized cousin \(T_a(x)=2E_a(x)\) gives
+The unit-normalized cousin $T_a(x)=2E_a(x)$ gives
 
 $$
 \boxed{
@@ -559,9 +559,9 @@ $$
 
 Notice the contrast.
 
-For two normalized sine fractions, if \(a\geq b\), the answer is independent of \(b\).
+For two normalized sine fractions, if $a\geq b$, the answer is independent of $b$.
 
-For two cosine-difference cousins, if \(a\geq b\), the answer still depends on \(b\).
+For two cosine-difference cousins, if $a\geq b$, the answer still depends on $b$.
 
 That contrast will matter much later.
 
@@ -625,7 +625,7 @@ Plot.line(ccData, {
 })
 ```
 
-The formula is no longer a perfect plateau, but it is still governed by the relative sizes of \(a\) and \(b\).
+The formula is no longer a perfect plateau, but it is still governed by the relative sizes of $a$ and $b$.
 
 ---
 
