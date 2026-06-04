@@ -876,4 +876,3 @@ $$
 This is where the real mystery begins.
 
 In Act II, we will see why this integral sometimes refuses to change even after we multiply by many extra factors, why the famous pattern eventually breaks, and why the explanation involves random walkers, safe windows, and sliced high-dimensional cubes.
-````
