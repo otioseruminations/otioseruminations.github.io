@@ -1,0 +1,1127 @@
+---
+title: "The Engine"
+description: "Act III of a beginner-friendly journey toward Borwein integrals."
+date: 2026-06-04
+categories: [mathematics, integrals, visualization]
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-tools: true
+execute:
+  echo: false
+---
+
+## What Act II left unexplained
+
+In Act II, we found the plateau:
+
+$$
+\int_0^\infty
+S_{a_0}(x)S_{a_1}(x)\cdots S_{a_n}(x)\,dx
+=
+\frac{\pi}{2a_0}
+$$
+
+whenever
+
+$$
+a_0\geq a_1+a_2+\cdots+a_n.
+$$
+
+Here
+
+$$
+S_a(x)=\frac{\sin(ax)}{ax}.
+$$
+
+The random-walk explanation was simple: the smaller steps all fit inside the largest safe window.
+
+But the story is larger.
+
+What if we multiply by cosine factors?
+
+What if the target is not zero?
+
+What if we replace
+
+$$
+\frac{\sin(ax)}{ax}
+$$
+
+by the cosine-difference cousin
+
+$$
+\frac{1-\cos(ax)}{(ax)^2}?
+$$
+
+What if we go further and use
+
+$$
+\frac{ax-\sin(ax)}{x^3},
+\qquad
+\frac{\cos(ax)-1+\frac{a^2x^2}{2}}{x^4},
+$$
+
+and the higher Taylor-remainder families?
+
+This act opens the engine under the hood.
+
+```{ojs}
+Plot = require("@observablehq/plot@0.6")
+
+sineFrac = (x, a) => Math.abs(a * x) < 1e-8 ? 1 : Math.sin(a * x) / (a * x)
+
+cosDiffHalf = (x, a) => {
+  const z = a * x;
+  return Math.abs(z) < 1e-7 ? 0.5 : (1 - Math.cos(z)) / (z * z);
+}
+
+cosDiffUnit = (x, a) => 2 * cosDiffHalf(x, a)
+
+fact = n => {
+  let out = 1;
+  for (let k = 2; k <= n; k++) out *= k;
+  return out;
+}
+
+binom = (n, k) => {
+  if (k < 0 || k > n) return 0;
+  return fact(n) / (fact(k) * fact(n - k));
+}
+
+prod = arr => arr.reduce((p, x) => p * x, 1)
+
+sgn = x => x > 1e-11 ? 1 : (x < -1e-11 ? -1 : 0)
+
+fmt = x => Number.isFinite(x) ? x.toFixed(12) : "not finite"
+fmtShort = x => Number.isFinite(x) ? x.toFixed(8) : "not finite"
+
+trapIntegral = (f, R, N = 9000) => {
+  const h = R / N;
+  let total = 0.5 * (f(0) + f(R));
+  for (let i = 1; i < N; i++) total += f(i * h);
+  return total * h;
+}
+
+normalizedSineCosineExact = (a0, extras, cosines) => {
+  const n = extras.length;
+  const m = cosines.length;
+  const total = n + m;
+  const masks = Math.pow(2, total);
+  let signSum = 0;
+
+  for (let mask = 0; mask < masks; mask++) {
+    let b = a0;
+    let eps = 1;
+
+    for (let i = 0; i < n; i++) {
+      const gamma = (mask & (1 << i)) ? 1 : -1;
+      eps *= gamma;
+      b += gamma * extras[i];
+    }
+
+    for (let j = 0; j < m; j++) {
+      const eta = (mask & (1 << (n + j))) ? 1 : -1;
+      b += eta * cosines[j];
+    }
+
+    signSum += eps * Math.pow(b, n) * sgn(b);
+  }
+
+  const denom = Math.pow(2, n + m) * fact(n) * a0 * prod(extras);
+  return Math.PI * signSum / (2 * denom);
+}
+
+psi = (p, a, x) => {
+  const z = a * x;
+  if (Math.abs(z) < 1e-6) return 1;
+
+  if (p === 0) return Math.sin(z) / z;
+  if (p === 1) return 2 * (1 - Math.cos(z)) / (z * z);
+  if (p === 2) return 6 * (z - Math.sin(z)) / Math.pow(z, 3);
+  if (p === 3) return 24 * (Math.cos(z) - 1 + z * z / 2) / Math.pow(z, 4);
+  if (p === 4) return 120 * (Math.sin(z) - z + Math.pow(z, 3) / 6) / Math.pow(z, 5);
+
+  return NaN;
+}
+
+powerTentDensity = (t, p, a) => {
+  if (Math.abs(t) > a) return 0;
+  return (p + 1) * Math.pow(a - Math.abs(t), p) / (2 * Math.pow(a, p + 1));
+}
+
+twoPowerExact = (p, q, a, b) => {
+  let sum = 0;
+
+  if (a >= b) {
+    for (let j = 0; j <= p; j++) {
+      sum += binom(p, j) * Math.pow(a - b, p - j) * Math.pow(b, q + j + 1) / (q + j + 1);
+    }
+  } else {
+    for (let j = 0; j <= q; j++) {
+      sum += binom(q, j) * Math.pow(b - a, q - j) * Math.pow(a, p + j + 1) / (p + j + 1);
+    }
+  }
+
+  return Math.PI * (p + 1) * (q + 1) * sum / (2 * Math.pow(a, p + 1) * Math.pow(b, q + 1));
+}
+```
+
+## Cosine factors: moving the target
+
+The first extension is to multiply by a cosine factor:
+
+$$
+\cos(cx).
+$$
+
+This gives an integral like
+
+$$
+\int_0^\infty
+\cos(cx)
+S_{a_0}(x)S_{a_1}(x)\cdots S_{a_n}(x)\,dx.
+$$
+
+The random-walk interpretation is friendly:
+
+> Instead of asking whether the bug lands near $0$, we ask whether it lands near the target $c$.
+
+The plateau condition becomes
+
+$$
+a_0\geq a_1+a_2+\cdots+a_n+|c|.
+$$
+
+If that holds, then
+
+$$
+\boxed{
+\int_0^\infty
+\cos(cx)
+S_{a_0}(x)S_{a_1}(x)\cdots S_{a_n}(x)\,dx
+=
+\frac{\pi}{2a_0}.
+}
+$$
+
+So the cosine does not change the height of the plateau. It moves the target, and moving the target makes the plateau easier to break.
+
+```{ojs}
+viewof a0_move = Inputs.range([0.5, 3], {
+  value: 1,
+  step: 0.05,
+  label: "safe radius a0"
+})
+
+viewof a1_move = Inputs.range([0.05, 1.5], {
+  value: 0.3,
+  step: 0.05,
+  label: "extra size a1"
+})
+
+viewof a2_move = Inputs.range([0.05, 1.5], {
+  value: 0.2,
+  step: 0.05,
+  label: "extra size a2"
+})
+
+viewof c_move = Inputs.range([-2, 2], {
+  value: 0.25,
+  step: 0.05,
+  label: "target c"
+})
+```
+
+```{ojs}
+moveSum = a1_move + a2_move + Math.abs(c_move)
+moveSafe = a0_move >= moveSum
+moveExact = normalizedSineCosineExact(a0_move, [a1_move, a2_move], [c_move])
+movePlateau = Math.PI / (2 * a0_move)
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Boundary budget: <b>a1 + a2 + |c| = ${fmtShort(moveSum)}</b><br>
+  Plateau condition: <b>a0 ≥ a1 + a2 + |c|</b><br>
+  Is the condition satisfied? <b>${moveSafe ? "yes" : "no"}</b><br>
+  Exact value from the plus/minus engine: <b>${fmt(moveExact)}</b><br>
+  Plateau height π/(2a0): <b>${fmt(movePlateau)}</b>
+</div>
+`
+```
+
+```{ojs}
+moveData = Array.from({length: 1000}, (_, i) => {
+  const x = i * 80 / 999;
+  return {
+    x: x,
+    y: Math.cos(c_move * x) * sineFrac(x, a0_move) * sineFrac(x, a1_move) * sineFrac(x, a2_move)
+  };
+})
+
+Plot.line(moveData, {
+  x: "x",
+  y: "y"
+}).plot({
+  width: 760,
+  height: 360,
+  x: {label: "x"},
+  y: {label: "integrand"},
+  grid: true
+})
+```
+
+This is the moving-target version of the plateau.
+
+---
+
+## The plus/minus engine
+
+The complete sine-fraction plus cosine formula looks intimidating, but the idea is simple.
+
+You take all possible plus/minus choices of the parameters, add them up in a signed way, and the answer drops out.
+
+Let
+
+$$
+I_{n,m}
+=
+\int_0^\infty
+\left[
+\prod_{k=0}^{n} S_{a_k}(x)
+\right]
+\left[
+\prod_{j=1}^{m}\cos(c_jx)
+\right]dx.
+$$
+
+For each choice of signs, define
+
+$$
+b
+=
+a_0
+\pm a_1
+\pm a_2
+\pm\cdots
+\pm a_n
+\pm c_1
+\pm\cdots
+\pm c_m.
+$$
+
+The signs attached to $a_1,\ldots,a_n$ also create a multiplier
+
+$$
+\varepsilon=(\text{sign of }a_1)(\text{sign of }a_2)\cdots(\text{sign of }a_n).
+$$
+
+Then the closed form is
+
+$$
+\boxed{
+I_{n,m}
+=
+\frac{\pi}
+{2a_0a_1\cdots a_n}
+\cdot
+\frac{1}{2^{n+m}n!}
+\sum
+\varepsilon\, b^n\,\operatorname{sgn}(b).
+}
+$$
+
+The symbol $\sum$ means: add this contribution over every possible plus/minus choice.
+
+This is the engine under the hood.
+
+You do not have to memorize it. The important part is the boundary condition it reveals:
+
+$$
+a_0\geq a_1+\cdots+a_n+|c_1|+\cdots+|c_m|.
+$$
+
+If that condition holds, the integral stays on the plateau:
+
+$$
+\boxed{
+I_{n,m}=\frac{\pi}{2a_0}.
+}
+$$
+
+---
+
+## Cosine-difference factors are not strangers
+
+Now return to the cosine-difference cousin from Act I:
+
+$$
+E_a(x)=\frac{1-\cos(ax)}{(ax)^2}.
+$$
+
+The unit-normalized version is
+
+$$
+T_a(x)=2E_a(x)
+=
+\frac{2(1-\cos(ax))}{(ax)^2}.
+$$
+
+The crucial identity is
+
+$$
+T_a(x)
+=
+\left[
+\frac{\sin\left(\frac{a x}{2}\right)}
+{\frac{a x}{2}}
+\right]^2.
+$$
+
+In our notation,
+
+$$
+T_a(x)=S_{a/2}(x)^2.
+$$
+
+So a product involving $T_a(x)$ is just a product involving repeated normalized sine fractions at half scale.
+
+For example,
+
+$$
+\int_0^\infty
+S_{a_0}(x)T_\beta(x)\,dx
+=
+\int_0^\infty
+S_{a_0}(x)S_{\beta/2}(x)S_{\beta/2}(x)\,dx.
+$$
+
+So the cosine-difference cousin is already inside the same engine.
+
+```{ojs}
+viewof a0_tent = Inputs.range([0.5, 4], {
+  value: 1.5,
+  step: 0.05,
+  label: "a0"
+})
+
+viewof beta_tent = Inputs.range([0.1, 5], {
+  value: 1,
+  step: 0.05,
+  label: "beta"
+})
+
+viewof c_tent = Inputs.range([-2, 2], {
+  value: 0,
+  step: 0.05,
+  label: "target c"
+})
+```
+
+```{ojs}
+tentExact = normalizedSineCosineExact(a0_tent, [beta_tent / 2, beta_tent / 2], [c_tent])
+tentApprox = trapIntegral(
+  x => Math.cos(c_tent * x) * sineFrac(x, a0_tent) * cosDiffUnit(x, beta_tent),
+  140,
+  9000
+)
+tentSafe = a0_tent >= beta_tent + Math.abs(c_tent)
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Because T_beta equals two half-scale sine fractions, the extra budget is beta.<br>
+  Plateau condition: <b>a0 ≥ beta + |c|</b><br>
+  Is the condition satisfied? <b>${tentSafe ? "yes" : "no"}</b><br>
+  Exact value from the repeated-factor formula: <b>${fmt(tentExact)}</b><br>
+  Numerical approximation over a large finite interval: <b>${fmt(tentApprox)}</b>
+</div>
+`
+```
+
+This is why products of normalized sine fractions with products of $T$-factors are not a separate problem. They are repeated-parameter versions of the same problem.
+
+For the half-normalized cousin $E_a(x)$, just remember
+
+$$
+E_a(x)=\frac12T_a(x).
+$$
+
+So each $E$-factor contributes one extra factor of $1/2$.
+
+---
+
+## The next ladder: higher Taylor remainders
+
+The normalized sine fraction and the cosine-difference cousin are only the first two rungs of a larger ladder.
+
+Define
+
+$$
+R_p(a,x)
+=
+\int_0^a
+\frac{(a-t)^p}{p!}\cos(tx)\,dt.
+$$
+
+The first few are
+
+$$
+R_0(a,x)=\frac{\sin(ax)}{x},
+$$
+
+$$
+R_1(a,x)=\frac{1-\cos(ax)}{x^2},
+$$
+
+$$
+R_2(a,x)=\frac{ax-\sin(ax)}{x^3},
+$$
+
+and
+
+$$
+R_3(a,x)=
+\frac{\cos(ax)-1+\frac{a^2x^2}{2}}{x^4}.
+$$
+
+The magic property is
+
+$$
+\frac{\partial}{\partial a}R_p(a,x)=R_{p-1}(a,x).
+$$
+
+So differentiating moves one rung down the ladder.
+
+If we differentiate enough times, every higher Taylor-remainder kernel eventually becomes the sine-over-$x$ kernel.
+
+This is why the derivative property is so powerful.
+
+For comparisons, it is cleaner to normalize each kernel so it starts at $1$:
+
+$$
+\Psi_{p,a}(x)=\frac{R_p(a,x)}{R_p(a,0)}.
+$$
+
+Then
+
+$$
+\Psi_{p,a}(0)=1.
+$$
+
+The first few are
+
+$$
+\Psi_{0,a}(x)=S_a(x),
+$$
+
+$$
+\Psi_{1,a}(x)=T_a(x),
+$$
+
+$$
+\Psi_{2,a}(x)=
+\frac{6(ax-\sin(ax))}{a^3x^3},
+$$
+
+and
+
+$$
+\Psi_{3,a}(x)=
+\frac{24\left(\cos(ax)-1+\frac{a^2x^2}{2}\right)}{a^4x^4}.
+$$
+
+---
+
+## What these higher kernels mean physically
+
+The random-walk interpretation also continues.
+
+The kernel $\Psi_{p,a}(x)$ is the wave-shadow of a random step supported on
+
+$$
+[-a,a].
+$$
+
+But the step is not always equally likely.
+
+For $p=0$, every step in $[-a,a]$ is equally likely. The density is flat.
+
+For $p=1$, the density is triangular. The bug is more likely to choose a step near $0$ than a step near the edge.
+
+For $p=2$, the density is a rounded parabolic tent.
+
+For larger $p$, the bug becomes more and more biased toward small steps.
+
+```{ojs}
+viewof p_shape = Inputs.range([0, 6], {
+  value: 0,
+  step: 1,
+  label: "p"
+})
+
+viewof a_shape = Inputs.range([0.5, 5], {
+  value: 2,
+  step: 0.1,
+  label: "a"
+})
+```
+
+```{ojs}
+densityData = Array.from({length: 800}, (_, i) => {
+  const t = -a_shape + 2 * a_shape * i / 799;
+  return {
+    t: t,
+    density: powerTentDensity(t, p_shape, a_shape)
+  };
+})
+
+Plot.line(densityData, {
+  x: "t",
+  y: "density"
+}).plot({
+  width: 760,
+  height: 360,
+  x: {label: "step value"},
+  y: {label: "probability density"},
+  grid: true
+})
+```
+
+This picture is important.
+
+The original plateau came from flatness: the largest window treated every interior landing point equally.
+
+Higher kernels are smoother, but less flat. That changes the behavior of products.
+
+---
+
+## Product of one higher family
+
+The logical next experiment is:
+
+$$
+\int_0^\infty
+\Psi_{p,a}(x)\Psi_{p,b}(x)\,dx.
+$$
+
+Assume $a\geq b$.
+
+Then the exact value is
+
+$$
+\boxed{
+\int_0^\infty
+\Psi_{p,a}(x)\Psi_{p,b}(x)\,dx
+=
+\pi
+\frac{(p+1)^2}{2a^{p+1}b^{p+1}}
+\sum_{j=0}^{p}
+\binom{p}{j}
+(a-b)^{p-j}
+\frac{b^{p+j+1}}{p+j+1}.
+}
+$$
+
+For $p=0$, this becomes the old two-factor plateau:
+
+$$
+\int_0^\infty S_a(x)S_b(x)\,dx
+=
+\frac{\pi}{2a}.
+$$
+
+For $p=1$, however,
+
+$$
+\int_0^\infty T_a(x)T_b(x)\,dx
+=
+\pi\left(\frac1a-\frac{b}{3a^2}\right).
+$$
+
+This still depends on $b$.
+
+So the perfect plateau is special to the flat case.
+
+```{ojs}
+viewof p_one = Inputs.range([0, 4], {
+  value: 1,
+  step: 1,
+  label: "family order p"
+})
+
+viewof a_one = Inputs.range([0.5, 5], {
+  value: 3,
+  step: 0.1,
+  label: "a"
+})
+
+viewof b_one = Inputs.range([0.1, 5], {
+  value: 1,
+  step: 0.1,
+  label: "b"
+})
+```
+
+```{ojs}
+oneExact = twoPowerExact(p_one, p_one, a_one, b_one)
+oneApprox = trapIntegral(
+  x => psi(p_one, a_one, x) * psi(p_one, b_one, x),
+  140,
+  9000
+)
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Exact value: <b>${fmt(oneExact)}</b><br>
+  Numerical approximation over a large finite interval: <b>${fmt(oneApprox)}</b><br>
+  For p = 0, the smaller scale disappears when it is inside the larger one.<br>
+  For p > 0, the answer usually still depends on both scales.
+</div>
+`
+```
+
+```{ojs}
+oneData = Array.from({length: 1000}, (_, i) => {
+  const x = i * 60 / 999;
+  return {
+    x: x,
+    y: psi(p_one, a_one, x) * psi(p_one, b_one, x)
+  };
+})
+
+Plot.line(oneData, {
+  x: "x",
+  y: "y"
+}).plot({
+  width: 760,
+  height: 360,
+  x: {label: "x"},
+  y: {label: "product"},
+  grid: true
+})
+```
+
+---
+
+## Product of two different higher families
+
+Now try two different rungs:
+
+$$
+\int_0^\infty
+\Psi_{p,a}(x)\Psi_{q,b}(x)\,dx.
+$$
+
+If $a\geq b$, then
+
+$$
+\boxed{
+\int_0^\infty
+\Psi_{p,a}(x)\Psi_{q,b}(x)\,dx
+=
+\pi
+\frac{(p+1)(q+1)}{2a^{p+1}b^{q+1}}
+\sum_{j=0}^{p}
+\binom{p}{j}
+(a-b)^{p-j}
+\frac{b^{q+j+1}}{q+j+1}.
+}
+$$
+
+If $b\geq a$, swap the roles of the two families.
+
+This single formula includes the mixed example from Act I:
+
+$$
+S_a(x)T_b(x).
+$$
+
+It also includes genuinely new-looking combinations like
+
+$$
+T_a(x)
+\cdot
+\frac{6(bx-\sin(bx))}{b^3x^3}.
+$$
+
+```{ojs}
+viewof p_two = Inputs.range([0, 4], {
+  value: 0,
+  step: 1,
+  label: "first family p"
+})
+
+viewof q_two = Inputs.range([0, 4], {
+  value: 2,
+  step: 1,
+  label: "second family q"
+})
+
+viewof a_two = Inputs.range([0.5, 5], {
+  value: 3,
+  step: 0.1,
+  label: "a"
+})
+
+viewof b_two = Inputs.range([0.1, 5], {
+  value: 1.5,
+  step: 0.1,
+  label: "b"
+})
+```
+
+```{ojs}
+twoExact = twoPowerExact(p_two, q_two, a_two, b_two)
+twoApprox = trapIntegral(
+  x => psi(p_two, a_two, x) * psi(q_two, b_two, x),
+  140,
+  9000
+)
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Exact value: <b>${fmt(twoExact)}</b><br>
+  Numerical approximation over a large finite interval: <b>${fmt(twoApprox)}</b>
+</div>
+`
+```
+
+---
+
+## Product of many families
+
+The pattern does not stop at two.
+
+Take any list of families:
+
+$$
+\Psi_{p_0,a_0}(x),
+\Psi_{p_1,a_1}(x),
+\ldots,
+\Psi_{p_N,a_N}(x).
+$$
+
+Then
+
+$$
+\int_0^\infty
+\Psi_{p_0,a_0}(x)
+\Psi_{p_1,a_1}(x)
+\cdots
+\Psi_{p_N,a_N}(x)
+\,dx
+$$
+
+has a random-walk meaning:
+
+> It equals $\pi$ times the height at zero of the final-position density of a bug whose different steps may come from different Taylor-remainder families.
+
+In compact form,
+
+$$
+\boxed{
+\int_0^\infty
+\prod_{i=0}^{N}
+\Psi_{p_i,a_i}(x)\,dx
+=
+\pi f_{X_0+\cdots+X_N}(0).
+}
+$$
+
+Here $X_i$ is a random step supported on $[-a_i,a_i]$ with density proportional to
+
+$$
+(a_i-|t|)^{p_i}.
+$$
+
+This is the many-family version.
+
+It is possible because wave-shadows multiply when independent random steps are added.
+
+```{ojs}
+viewof p0_many = Inputs.range([0, 4], {
+  value: 0,
+  step: 1,
+  label: "p0"
+})
+
+viewof p1_many = Inputs.range([0, 4], {
+  value: 1,
+  step: 1,
+  label: "p1"
+})
+
+viewof p2_many = Inputs.range([0, 4], {
+  value: 2,
+  step: 1,
+  label: "p2"
+})
+
+viewof a0_many = Inputs.range([0.5, 4], {
+  value: 2.5,
+  step: 0.1,
+  label: "a0"
+})
+
+viewof a1_many = Inputs.range([0.5, 4], {
+  value: 1.5,
+  step: 0.1,
+  label: "a1"
+})
+
+viewof a2_many = Inputs.range([0.5, 4], {
+  value: 1,
+  step: 0.1,
+  label: "a2"
+})
+```
+
+```{ojs}
+manyApprox = trapIntegral(
+  x => psi(p0_many, a0_many, x) * psi(p1_many, a1_many, x) * psi(p2_many, a2_many, x),
+  160,
+  11000
+)
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Numerical approximation for the three-family product:
+  <b>${fmt(manyApprox)}</b><br>
+  The exact general object is a piecewise-polynomial convolution density.
+</div>
+`
+```
+
+```{ojs}
+manyData = Array.from({length: 1000}, (_, i) => {
+  const x = i * 60 / 999;
+  return {
+    x: x,
+    y: psi(p0_many, a0_many, x) * psi(p1_many, a1_many, x) * psi(p2_many, a2_many, x)
+  };
+})
+
+Plot.line(manyData, {
+  x: "x",
+  y: "y"
+}).plot({
+  width: 760,
+  height: 360,
+  x: {label: "x"},
+  y: {label: "product"},
+  grid: true
+})
+```
+
+---
+
+## The derivative machine
+
+There is also a symbolic way to understand why this works.
+
+Recall
+
+$$
+\frac{\partial}{\partial a}R_p(a,x)=R_{p-1}(a,x).
+$$
+
+So, after differentiating $p$ times,
+
+$$
+\frac{\partial^p}{\partial a^p}R_p(a,x)=R_0(a,x)=\frac{\sin(ax)}{x}.
+$$
+
+Therefore, if we start with a product of higher Taylor-remainder kernels and differentiate each parameter enough times, we descend to a product of sine-over-$x$ factors.
+
+That product is exactly the one handled by the Borwein plus/minus engine.
+
+Then, in principle, we integrate back.
+
+So the machine is:
+
+$$
+\boxed{
+\text{differentiate down to sine factors}
+\quad\longrightarrow\quad
+\text{apply the plus/minus formula}
+\quad\longrightarrow\quad
+\text{integrate back}.
+}
+$$
+
+This is why the many-family extension is not a guess. It is structurally forced by the derivative ladder.
+
+---
+
+## The soft-breach law
+
+Now we reach the most interesting extension.
+
+Suppose we keep one flat safe-window factor:
+
+$$
+S_{a_0}(x),
+$$
+
+but allow the other steps to come from higher families:
+
+$$
+\Psi_{p_1,a_1}(x),
+\Psi_{p_2,a_2}(x),
+\ldots,
+\Psi_{p_N,a_N}(x).
+$$
+
+Consider
+
+$$
+\int_0^\infty
+\cos(cx)
+S_{a_0}(x)
+\prod_{k=1}^{N}\Psi_{p_k,a_k}(x)
+\,dx.
+$$
+
+The plateau condition is still
+
+$$
+a_0\geq a_1+\cdots+a_N+|c|.
+$$
+
+If it holds, then
+
+$$
+\boxed{
+\int_0^\infty
+\cos(cx)
+S_{a_0}(x)
+\prod_{k=1}^{N}\Psi_{p_k,a_k}(x)
+\,dx
+=
+\frac{\pi}{2a_0}.
+}
+$$
+
+The reason is still the same: every possible final position lies inside the safe window.
+
+Now suppose the boundary is barely crossed on one side.
+
+Let
+
+$$
+\delta=a_1+\cdots+a_N+c-a_0>0.
+$$
+
+If $\delta$ is small enough that only one extreme corner is lost, then the lost probability is
+
+$$
+\boxed{
+\frac{\delta^{N+P}}
+{(N+P)!}
+\prod_{k=1}^{N}
+\frac{(p_k+1)!}{2a_k^{p_k+1}},
+\qquad
+P=p_1+\cdots+p_N.
+}
+$$
+
+So the integral becomes
+
+$$
+\boxed{
+\frac{\pi}{2a_0}
+\left[
+1-
+\frac{\delta^{N+P}}
+{(N+P)!}
+\prod_{k=1}^{N}
+\frac{(p_k+1)!}{2a_k^{p_k+1}}
+\right].
+}
+$$
+
+This is the soft-breach law.
+
+For flat steps, all $p_k=0$, and the defect is proportional to $\delta^N$.
+
+For triangular steps, all $p_k=1$, and the defect is proportional to $\delta^{2N}$.
+
+For parabolic-tent steps, all $p_k=2$, and the defect is proportional to $\delta^{3N}$.
+
+The smoother the bug's step behavior near the edge, the softer the collision with the boundary.
+
+```{ojs}
+viewof softN = Inputs.range([1, 5], {
+  value: 3,
+  step: 1,
+  label: "number of non-flat steps N"
+})
+
+viewof softP = Inputs.range([0, 4], {
+  value: 1,
+  step: 1,
+  label: "common family order p"
+})
+
+viewof softDelta = Inputs.range([0.001, 0.4], {
+  value: 0.08,
+  step: 0.001,
+  label: "small breach delta"
+})
+
+viewof softA = Inputs.range([0.5, 3], {
+  value: 1,
+  step: 0.05,
+  label: "common step scale a"
+})
+```
+
+```{ojs}
+softTotalP = softN * softP
+softExponent = softN + softTotalP
+softLost = Math.pow(softDelta, softExponent) /
+  fact(softExponent) *
+  Math.pow(fact(softP + 1) / (2 * Math.pow(softA, softP + 1)), softN)
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Defect exponent: <b>N + P = ${softExponent}</b><br>
+  Lost probability in the first-corner regime:
+  <b>${softLost.toExponential(6)}</b><br>
+  Increasing p makes the first breach dramatically softer.
+</div>
+`
+```
+
+---
+
+## The punchline
+
+The famous plateau is not a trigonometric accident.
+
+It is the shadow of a flat random walker trapped inside a safe window.
+
+Cosine factors move the target.
+
+Cosine-difference factors are repeated half-scale sine-fraction factors.
+
+Higher Taylor remainders create smoother random walkers.
+
+And the derivative ladder explains why all of these families belong to the same machine.
+
+The journey began with
+
+$$
+\frac{\sin x}{x}.
+$$
+
+It ends with a much larger principle:
+
+> These integrals measure how random-walk distributions collide with boundaries.
+
+That is why the pattern holds.
+
+That is why it breaks.
+
+And that is why the way it breaks contains new mathematics.
