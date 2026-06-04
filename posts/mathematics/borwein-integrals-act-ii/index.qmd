@@ -1,0 +1,921 @@
+---
+
+title: "The Plateau"
+description: "Act II of a beginner-friendly journey toward Borwein integrals."
+date: 2026-06-04
+categories: [mathematics, integrals, visualization]
+format:
+html:
+toc: true
+code-fold: true
+code-tools: true
+execute:
+echo: false
+-----------
+
+## The pattern that should make you suspicious
+
+In Act I, we met the normalized sine fraction
+
+$$
+S_a(x)=\frac{\sin(ax)}{ax}.
+$$
+
+It begins at $1$, wiggles, slowly shrinks, and has surprisingly clean integrals.
+
+The simplest example was
+
+$$
+\int_0^\infty S_a(x),dx
+=======================
+
+\frac{\pi}{2a}.
+$$
+
+Then we found the two-factor identity
+
+$$
+\int_0^\infty S_a(x)S_b(x),dx
+=============================
+
+\frac{\pi}{2\max(a,b)}.
+$$
+
+So if $a\geq b$, adding the second factor $S_b(x)$ does not change the value:
+
+$$
+\int_0^\infty S_a(x)S_b(x),dx
+=============================
+
+\frac{\pi}{2a}.
+$$
+
+That is already strange.
+
+But the real mystery begins when we multiply many factors.
+
+Consider
+
+$$
+\int_0^\infty
+\frac{\sin x}{x}
+\frac{\sin(x/3)}{x/3}
+\frac{\sin(x/5)}{x/5}
+\cdots
+,dx.
+$$
+
+The first few cases appear to keep giving
+
+$$
+\frac{\pi}{2}.
+$$
+
+For example,
+
+$$
+\int_0^\infty
+\frac{\sin x}{x}
+\frac{\sin(x/3)}{x/3}
+,dx
+===
+
+\frac{\pi}{2}.
+$$
+
+Also,
+
+$$
+\int_0^\infty
+\frac{\sin x}{x}
+\frac{\sin(x/3)}{x/3}
+\frac{\sin(x/5)}{x/5}
+,dx
+===
+
+\frac{\pi}{2}.
+$$
+
+In fact, the equality survives for a surprisingly long time.
+
+Then it breaks.
+
+Not dramatically. Not loudly. It breaks by an amount so tiny that a numerical experiment might easily miss it.
+
+That is the story of this act.
+
+```{ojs}
+// Shared helpers for Act II.
+
+Plot = require("@observablehq/plot@0.6")
+
+sineFrac = (x, a) => Math.abs(a * x) < 1e-8 ? 1 : Math.sin(a * x) / (a * x)
+
+cosDiffHalf = (x, a) => {
+  const z = a * x;
+  return Math.abs(z) < 1e-7 ? 0.5 : (1 - Math.cos(z)) / (z * z);
+}
+
+cosDiffUnit = (x, a) => 2 * cosDiffHalf(x, a)
+
+factorial = n => {
+  let out = 1;
+  for (let k = 2; k <= n; k++) out *= k;
+  return out;
+}
+
+prod = arr => arr.reduce((p, x) => p * x, 1)
+
+fmt = x => Number.isFinite(x) ? x.toFixed(12) : "not finite"
+
+fmtShort = x => Number.isFinite(x) ? x.toFixed(8) : "not finite"
+
+// Exact normalized sine-fraction product integral:
+//
+// ∫_0^∞ Π_{k=0}^n sin(a_k x)/(a_k x) dx
+//
+// We treat a0 as the special first parameter and extras = [a1,...,an].
+borweinExact = (a0, extras) => {
+  const n = extras.length;
+  if (n === 0) return Math.PI / (2 * a0);
+
+  const denominator = Math.pow(2, n) * factorial(n) * prod(extras);
+  let signSum = 0;
+  const totalMasks = Math.pow(2, n);
+
+  for (let mask = 0; mask < totalMasks; mask++) {
+    let eps = 1;
+    let b = a0;
+
+    for (let i = 0; i < n; i++) {
+      const gamma = (mask & (1 << i)) ? 1 : -1;
+      eps *= gamma;
+      b += gamma * extras[i];
+    }
+
+    signSum += eps * Math.pow(b, n) * Math.sign(b);
+  }
+
+  const C = signSum / denominator;
+  return Math.PI * C / (2 * a0);
+}
+
+makeRng = seed => {
+  let state = seed >>> 0;
+  return () => {
+    state = (1664525 * state + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+}
+
+uniformStep = (rng, a) => (2 * rng() - 1) * a
+
+walkSamples = (steps, N = 10000, seed = 123456789) => {
+  const rng = makeRng(seed);
+  return Array.from({length: N}, () => {
+    let total = 0;
+    for (const a of steps) total += uniformStep(rng, a);
+    return total;
+  });
+}
+```
+
+## The famous breaking point
+
+The first factor
+
+$$
+\frac{\sin x}{x}
+$$
+
+plays the role of the large central factor. The later factors have sizes
+
+$$
+\frac13,\frac15,\frac17,\ldots
+$$
+
+The relevant sum is
+
+$$
+\frac13+\frac15+\frac17+\cdots.
+$$
+
+As long as the included extra sizes add up to at most $1$, the integral stays equal to $\pi/2$.
+
+The surprise is where the sum first crosses $1$.
+
+```{ojs}
+viewof n_extra = Inputs.range([0, 10], {
+  value: 6,
+  step: 1,
+  label: "number of extra factors after sin(x)/x"
+})
+```
+
+```{ojs}
+oddDenoms = Array.from({length: n_extra}, (_, i) => 2 * i + 3)
+extraSizes = oddDenoms.map(d => 1 / d)
+partialSum = extraSizes.reduce((s, x) => s + x, 0)
+safe = partialSum <= 1
+exactBorwein = borweinExact(1, extraSizes)
+ratioToPiHalf = exactBorwein / (Math.PI / 2)
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Extra denominators: <b>${oddDenoms.length ? oddDenoms.join(", ") : "none"}</b><br>
+  Sum of extra sizes:
+  <b>${fmt(partialSum)}</b><br>
+  Safe-window condition:
+  <b>${partialSum.toFixed(12)} ≤ 1</b>
+  is
+  <b style="color:${safe ? "green" : "crimson"}">${safe ? "true" : "false"}</b>.<br>
+  Exact integral:
+  <b>${fmt(exactBorwein)}</b><br>
+  Exact integral divided by π/2:
+  <b>${fmt(ratioToPiHalf)}</b>
+</div>
+`
+```
+
+```{ojs}
+sumData = Array.from({length: 11}, (_, n) => {
+  const denoms = Array.from({length: n}, (_, i) => 2 * i + 3);
+  const sizes = denoms.map(d => 1 / d);
+  const s = sizes.reduce((total, x) => total + x, 0);
+  return {n, sum: s};
+})
+
+Plot.plot({
+  width: 760,
+  height: 360,
+  x: {label: "number of extra factors"},
+  y: {label: "sum of extra sizes"},
+  marks: [
+    Plot.line(sumData, {x: "n", y: "sum"}),
+    Plot.dot(sumData, {x: "n", y: "sum"}),
+    Plot.ruleY([1])
+  ],
+  grid: true
+})
+```
+
+Through the factor with denominator $13$, the extra sizes still add up to less than $1$:
+
+$$
+\frac13+\frac15+\frac17+\frac19+\frac1{11}+\frac1{13}<1.
+$$
+
+But when the $1/15$ factor is added,
+
+$$
+\frac13+\frac15+\frac17+\frac19+\frac1{11}+\frac1{13}+\frac1{15}>1.
+$$
+
+The equality finally breaks.
+
+The pattern was not eternal. It was waiting for a boundary to be crossed.
+
+---
+
+## A random walk from scratch
+
+Forget integrals for a moment.
+
+Imagine a bug standing at $0$ on a number line.
+
+The bug takes one step. But instead of moving exactly left or exactly right, it may choose any step between $-a$ and $a$.
+
+So if $a=3$, the bug may move by
+
+$$
+-2.4,\quad 0.7,\quad 2.91,
+$$
+
+or any other number between $-3$ and $3$.
+
+Now suppose the bug takes several steps:
+
+$$
+u_1,u_2,\ldots,u_n.
+$$
+
+The final position is
+
+$$
+u_1+u_2+\cdots+u_n.
+$$
+
+If the first step must lie between $-a_1$ and $a_1$, the second between $-a_2$ and $a_2$, and so on, then the farthest the bug can go to the right is
+
+$$
+a_1+a_2+\cdots+a_n.
+$$
+
+The farthest it can go to the left is
+
+$$
+-(a_1+a_2+\cdots+a_n).
+$$
+
+So every possible final position lies in the interval
+
+$$
+[-s,s],
+\qquad
+s=a_1+a_2+\cdots+a_n.
+$$
+
+Now place a safe window around zero:
+
+$$
+[-a_0,a_0].
+$$
+
+If
+
+$$
+a_0\geq a_1+a_2+\cdots+a_n,
+$$
+
+then every possible walk lands inside the safe window.
+
+That is the hidden reason the integral stays constant.
+
+---
+
+## Play with the bug
+
+The next widget simulates many bugs.
+
+Each bug takes steps of sizes chosen uniformly from the listed intervals. The histogram shows where the bugs end up.
+
+The two vertical lines show the safe window.
+
+```{ojs}
+viewof n_walk = Inputs.range([1, 7], {
+  value: 6,
+  step: 1,
+  label: "number of bug steps"
+})
+
+viewof safeRadius = Inputs.range([0.2, 1.5], {
+  value: 1,
+  step: 0.05,
+  label: "safe radius"
+})
+```
+
+```{ojs}
+walkDenoms = Array.from({length: n_walk}, (_, i) => 2 * i + 3)
+walkSteps = walkDenoms.map(d => 1 / d)
+walkSum = walkSteps.reduce((s, x) => s + x, 0)
+samples = walkSamples(walkSteps, 12000, 20260604 + n_walk)
+insideFraction = samples.filter(x => Math.abs(x) <= safeRadius).length / samples.length
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Step sizes:
+  <b>${walkSteps.map(x => x.toFixed(4)).join(", ")}</b><br>
+  Maximum possible distance from zero:
+  <b>${fmtShort(walkSum)}</b><br>
+  Safe radius:
+  <b>${fmtShort(safeRadius)}</b><br>
+  Simulated fraction inside the safe window:
+  <b>${insideFraction.toFixed(4)}</b>
+</div>
+`
+```
+
+```{ojs}
+Plot.plot({
+  width: 760,
+  height: 360,
+  x: {label: "final position"},
+  y: {label: "number of simulated bugs"},
+  marks: [
+    Plot.rectY(samples, Plot.binX({y: "count"}, {x: d => d, thresholds: 70})),
+    Plot.ruleX([-safeRadius, safeRadius])
+  ],
+  grid: true
+})
+```
+
+When the maximum possible distance is smaller than the safe radius, every bug is safe.
+
+When the maximum possible distance exceeds the safe radius, a few extreme bugs can escape.
+
+That is the same event that makes the integral stop equaling $\pi/2$.
+
+---
+
+## Why waves know about random walks
+
+Now we return to the integral.
+
+A single bug step chosen uniformly from $[-a,a]$ has a hidden wave-shadow:
+
+$$
+S_a(x)=\frac{\sin(ax)}{ax}.
+$$
+
+Do not worry about the full machinery yet. The important rule is this:
+
+> When independent random steps are added, their wave-shadows multiply.
+
+So
+
+$$
+S_{a_1}(x)S_{a_2}(x)\cdots S_{a_n}(x)
+$$
+
+is the wave-shadow of a bug taking several independent steps.
+
+This is why a product of normalized sine fractions knows something about a random walk.
+
+The integral is not a random coincidence. It is measuring how much of the bug's possible motion fits inside a target window.
+
+---
+
+## From random walks to high-dimensional boxes
+
+The random-walk picture has a geometric twin.
+
+For two steps, one possible walk is recorded by the pair
+
+$$
+(u_1,u_2).
+$$
+
+If
+
+$$
+-a_1\leq u_1\leq a_1
+$$
+
+and
+
+$$
+-a_2\leq u_2\leq a_2,
+$$
+
+then all possible two-step walks fill a rectangle.
+
+The bug lands safely when
+
+$$
+|u_1+u_2|\leq a_0.
+$$
+
+This condition cuts a diagonal band through the rectangle.
+
+If the band covers the whole rectangle, every walk is safe.
+
+If not, the unsafe walks appear as corners outside the band.
+
+```{ojs}
+viewof a0_slice = Inputs.range([0.1, 3], {
+  value: 1,
+  step: 0.05,
+  label: "safe radius a0"
+})
+
+viewof a1_slice = Inputs.range([0.1, 2], {
+  value: 0.6,
+  step: 0.05,
+  label: "step size a1"
+})
+
+viewof a2_slice = Inputs.range([0.1, 2], {
+  value: 0.3,
+  step: 0.05,
+  label: "step size a2"
+})
+```
+
+```{ojs}
+gridN = 85
+sliceData = Array.from({length: gridN * gridN}, (_, idx) => {
+  const i = idx % gridN;
+  const j = Math.floor(idx / gridN);
+  const u1 = -a1_slice + 2 * a1_slice * i / (gridN - 1);
+  const u2 = -a2_slice + 2 * a2_slice * j / (gridN - 1);
+  return {
+    u1,
+    u2,
+    status: Math.abs(u1 + u2) <= a0_slice ? "safe" : "unsafe"
+  };
+})
+
+allSafe2D = a0_slice >= a1_slice + a2_slice
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Since <b>a1 + a2 = ${fmtShort(a1_slice + a2_slice)}</b>,
+  the whole rectangle is safe exactly when
+  <b>a0 ≥ a1 + a2</b>.<br>
+  For the current values, this condition is
+  <b style="color:${allSafe2D ? "green" : "crimson"}">${allSafe2D ? "true" : "false"}</b>.
+</div>
+`
+```
+
+```{ojs}
+Plot.plot({
+  width: 560,
+  height: 420,
+  x: {label: "first step u1"},
+  y: {label: "second step u2"},
+  color: {legend: true},
+  marks: [
+    Plot.cell(sliceData, {x: "u1", y: "u2", fill: "status", inset: 0})
+  ],
+  grid: true
+})
+```
+
+For three steps, the rectangle becomes a box.
+
+For four steps, we can no longer draw it easily, but the idea is the same.
+
+For $n$ steps, all possible walks form an $n$-dimensional box. A safe-window condition slices through it.
+
+The famous integral is measuring how much of this box survives the slice.
+
+---
+
+## The main plateau theorem
+
+Now we can state the basic theorem in a friendly way.
+
+Let
+
+$$
+I(a_0,a_1,\ldots,a_n)
+=====================
+
+\int_0^\infty
+S_{a_0}(x)S_{a_1}(x)\cdots S_{a_n}(x),dx.
+$$
+
+If the first size is at least as large as all the others added together,
+
+$$
+a_0\geq a_1+a_2+\cdots+a_n,
+$$
+
+then
+
+$$
+\boxed{
+I(a_0,a_1,\ldots,a_n)
+=====================
+
+\frac{\pi}{2a_0}.
+}
+$$
+
+This is the Borwein plateau.
+
+The extra factors do not change the answer because every possible random walk still fits inside the safe window.
+
+For the famous example,
+
+$$
+a_0=1,
+$$
+
+and
+
+$$
+a_1,a_2,a_3,\ldots
+==================
+
+\frac13,\frac15,\frac17,\ldots.
+$$
+
+The integral stays equal to $\pi/2$ as long as
+
+$$
+\frac13+\frac15+\frac17+\cdots\leq 1.
+$$
+
+---
+
+## The first breach
+
+What happens immediately after the boundary is crossed?
+
+Let
+
+$$
+s=a_1+a_2+\cdots+a_n.
+$$
+
+If
+
+$$
+s>a_0,
+$$
+
+then some walks can escape the safe window.
+
+Define the breach amount
+
+$$
+\delta=s-a_0.
+$$
+
+If the breach is small enough that only the extreme corners are cut off, then the integral becomes
+
+$$
+\boxed{
+I(a_0,a_1,\ldots,a_n)
+=====================
+
+\frac{\pi}{2a_0}
+\left[
+1-
+\frac{\delta^n}
+{2^{n-1}n!a_1a_2\cdots a_n}
+\right].
+}
+$$
+
+This formula explains why the $1/15$ failure is so tiny.
+
+At that point the boundary has only barely been crossed, so only a microscopic corner of the high-dimensional box is lost.
+
+The pattern breaks, but it breaks softly.
+
+```{ojs}
+breachN = 7
+breachDenoms = Array.from({length: breachN}, (_, i) => 2 * i + 3)
+breachSizes = breachDenoms.map(d => 1 / d)
+breachSum = breachSizes.reduce((s, x) => s + x, 0)
+breachDelta = breachSum - 1
+breachCorrection = Math.pow(breachDelta, breachN) /
+  (Math.pow(2, breachN - 1) * factorial(breachN) * prod(breachSizes))
+breachPred = Math.PI / 2 * (1 - breachCorrection)
+breachExact = borweinExact(1, breachSizes)
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  For denominators <b>${breachDenoms.join(", ")}</b>:<br>
+  Sum of extra sizes:
+  <b>${fmt(breachSum)}</b><br>
+  Breach amount:
+  <b>${fmt(breachDelta)}</b><br>
+  First-breach formula:
+  <b>${fmt(breachPred)}</b><br>
+  Exact value from the plus/minus formula:
+  <b>${fmt(breachExact)}</b><br>
+  Ratio to π/2:
+  <b>${fmt(breachExact / (Math.PI / 2))}</b>
+</div>
+`
+```
+
+The exact value is almost indistinguishable from $\pi/2$ on ordinary numerical scales.
+
+But it is not equal.
+
+---
+
+## Repeated copies of the same wave
+
+One natural special case is
+
+$$
+\int_0^\infty
+\left(\frac{\sin x}{x}\right)^n dx.
+$$
+
+This is the equal-step version of the same story.
+
+Here every step size is $1$.
+
+Move the slider to see the exact value for small powers.
+
+```{ojs}
+viewof powerN = Inputs.range([1, 12], {
+  value: 3,
+  step: 1,
+  label: "power n"
+})
+```
+
+```{ojs}
+powerExact = borweinExact(1, Array.from({length: powerN - 1}, () => 1))
+powerRatio = powerExact / (Math.PI / 2)
+
+powerRows = Array.from({length: 12}, (_, i) => {
+  const n = i + 1;
+  const value = borweinExact(1, Array.from({length: n - 1}, () => 1));
+  return {
+    n,
+    value,
+    ratio: value / (Math.PI / 2)
+  };
+})
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Current value:
+  <b>${fmt(powerExact)}</b><br>
+  Current value divided by π/2:
+  <b>${fmt(powerRatio)}</b>
+</div>
+`
+```
+
+```{ojs}
+Plot.plot({
+  width: 760,
+  height: 360,
+  x: {label: "power n"},
+  y: {label: "integral divided by π/2"},
+  marks: [
+    Plot.line(powerRows, {x: "n", y: "ratio"}),
+    Plot.dot(powerRows, {x: "n", y: "ratio"})
+  ],
+  grid: true
+})
+```
+
+The first two powers give the same value:
+
+$$
+\int_0^\infty \frac{\sin x}{x},dx
+=================================
+
+\frac{\pi}{2},
+$$
+
+and
+
+$$
+\int_0^\infty \left(\frac{\sin x}{x}\right)^2 dx
+================================================
+
+\frac{\pi}{2}.
+$$
+
+But the third power already drops:
+
+$$
+\int_0^\infty \left(\frac{\sin x}{x}\right)^3 dx
+================================================
+
+\frac{3\pi}{8}.
+$$
+
+Why?
+
+Because with three identical factors, the first size $1$ is no longer large enough to contain the sum of the other two sizes:
+
+$$
+1<1+1.
+$$
+
+The safe window is breached.
+
+---
+
+## Repeated copies of the cosine-difference cousin
+
+Recall the cosine-difference cousin from Act I:
+
+$$
+E_1(x)=\frac{1-\cos x}{x^2}.
+$$
+
+We saw that
+
+$$
+E_1(x)
+======
+
+\frac12
+\left(
+\frac{\sin(x/2)}{x/2}
+\right)^2.
+$$
+
+Therefore
+
+$$
+E_1(x)^m
+========
+
+\frac{1}{2^m}
+\left(
+\frac{\sin(x/2)}{x/2}
+\right)^{2m}.
+$$
+
+With the substitution $u=x/2$, this becomes
+
+$$
+\int_0^\infty E_1(x)^m,dx
+=========================
+
+2^{1-m}
+\int_0^\infty
+\left(
+\frac{\sin u}{u}
+\right)^{2m}
+du.
+$$
+
+So powers of the cosine-difference cousin are secretly even powers of the normalized sine fraction.
+
+```{ojs}
+viewof cousinPower = Inputs.range([1, 8], {
+  value: 2,
+  step: 1,
+  label: "power m"
+})
+```
+
+```{ojs}
+evenPowerValue = borweinExact(1, Array.from({length: 2 * cousinPower - 1}, () => 1))
+cousinPowerValue = Math.pow(2, 1 - cousinPower) * evenPowerValue
+
+cousinPowerRows = Array.from({length: 8}, (_, i) => {
+  const m = i + 1;
+  const valEven = borweinExact(1, Array.from({length: 2 * m - 1}, () => 1));
+  const valCousin = Math.pow(2, 1 - m) * valEven;
+  return {
+    m,
+    value: valCousin
+  };
+})
+
+html`
+<div style="font-size: 1.05rem; line-height: 1.65;">
+  Current integral:
+  <b>${fmt(cousinPowerValue)}</b>
+</div>
+`
+```
+
+```{ojs}
+Plot.plot({
+  width: 760,
+  height: 360,
+  x: {label: "power m"},
+  y: {label: "integral"},
+  marks: [
+    Plot.line(cousinPowerRows, {x: "m", y: "value"}),
+    Plot.dot(cousinPowerRows, {x: "m", y: "value"})
+  ],
+  grid: true
+})
+```
+
+This is one of the main morals of the journey so far:
+
+> Different-looking trigonometric fractions keep reducing to the same hidden product problem.
+
+---
+
+## What Act II has revealed
+
+The mysterious integral
+
+$$
+\int_0^\infty
+\prod_{k=0}^{n}
+\frac{\sin(a_kx)}{a_kx}
+,dx
+$$
+
+is not a random trick.
+
+It is governed by a simple geometric question:
+
+> Can the smaller step sizes, when added together, fit inside the largest safe window?
+
+If yes, the answer stays on the plateau:
+
+$$
+\frac{\pi}{2a_0}.
+$$
+
+If no, part of the random-walk box gets sliced away, and the answer drops.
+
+That is why the famous sequence survives through $1/13$ but fails at $1/15$.
+
+In Act III, we will open the engine under the hood. We will add cosine factors, moving targets, cosine-difference factors, and higher Taylor-remainder families such as
+
+$$
+\frac{ax-\sin(ax)}{x^3}
+$$
+
+and
+
+$$
+\frac{\cos(ax)-1+\frac{a^2x^2}{2}}{x^4}.
+$$
+
+The pattern will become much larger than the famous example.
