@@ -1,5 +1,5 @@
 ---
-title: "Evaluating Two Inverse Tangent Integrals by Complex Analysis and Parseval--Goldstein"
+title: "Evaluating Two Inverse Tangent Integrals"
 date: 2026-06-03
 description: "A two-method evaluation of inverse tangent and inverse hyperbolic tangent integrals using wedge contours and the Parseval--Goldstein theorem."
 categories: [mathematics, complex-analysis, laplace-transforms, integrals]
@@ -7,7 +7,7 @@ categories: [mathematics, complex-analysis, laplace-transforms, integrals]
 
 ## Introduction
 
-We evaluate two related integrals.
+We evaluate two families of related arctangent integrals:
 
 $$I_1(a,b,k)=\int_0^\infty x^a\arctan\left(\frac{k}{1+x^b}\right)\,dx$$
 
@@ -15,11 +15,11 @@ and
 
 $$I_2(a,b,k)=\int_0^\infty x^a\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\,dx$$
 
-The first integral involves the inverse tangent function. The second involves the inverse hyperbolic tangent function.
+The first integral involves the inverse tangent function, while second involves the inverse hyperbolic tangent function.
 
-We evaluate each integral in two ways. First, we use a wedge-contour residue method. Then, we use the Parseval--Goldstein theorem for Laplace transforms.
+We evaluate each integral using two distinct approaches.
 
-The final answers are as follows.
+The final closed form expressions for the two integrals are:
 
 $$\boxed{I_1(a,b,k)=\frac{\pi}{a+1}(1+k^2)^{\frac{a+1}{2b}}\frac{\sin\left(\frac{a+1}{b}\arctan k\right)}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
 
@@ -27,15 +27,15 @@ and
 
 $$\boxed{I_2(a,b,k)=\frac{\pi}{2(a+1)}\frac{(1+k)^{\frac{a+1}{b}}-(1-k)^{\frac{a+1}{b}}}{\sin\left(\frac{\pi(a+1)}{b}\right)}}$$
 
-In the second formula, we use the standard convention
+We use the standard convention
 
 $$\operatorname{arctanh}z=\frac12\log\left(\frac{1+z}{1-z}\right)$$
 
-Throughout the note, define
+Throughout the note, we define
 
 $$\mu=\frac{a+1}{b}$$
 
-The natural convergence condition is
+The natural convergence condition for the integral is
 
 $$0<\mu<1$$
 
@@ -57,7 +57,7 @@ We begin with
 
 $$I_1=\int_0^\infty x^a\arctan\left(\frac{k}{1+x^b}\right)\,dx$$
 
-Use integration by parts. Let
+ILATE motivates us to try to simplify this expression via integration by parts. Let
 
 $$u=\arctan\left(\frac{k}{1+x^b}\right),\qquad dv=x^a\,dx$$
 
@@ -73,15 +73,15 @@ Therefore,
 
 $$du=\frac{-\frac{kb x^{b-1}}{(1+x^b)^2}}{1+\left(\frac{k}{1+x^b}\right)^2}\,dx$$
 
-Simplifying,
+Simplifying, we get
 
 $$du=-\frac{kb x^{b-1}}{(1+x^b)^2+k^2}\,dx$$
 
-Integration by parts gives
+Hence, integration by parts gives
 
 $$I_1=\left[\frac{x^{a+1}}{a+1}\arctan\left(\frac{k}{1+x^b}\right)\right]_0^\infty+\frac{bk}{a+1}\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2+k^2}\,dx$$
 
-The boundary term vanishes. As $x\to0^+$,
+Note that the boundary term vanishes. As $x\to0^+$,
 
 $$x^{a+1}\arctan\left(\frac{k}{1+x^b}\right)\to0$$
 
@@ -95,23 +95,23 @@ $$x^{a+1}\arctan\left(\frac{k}{1+x^b}\right)\sim kx^{a+1-b}\to0$$
 
 provided $b>a+1$.
 
-Hence
+Hence,
 
 $$I_1=\frac{bk}{a+1}\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2+k^2}\,dx$$
 
-Define
+Define:
 
 $$C=\int_0^\infty\frac{x^{a+b}}{(1+x^b)^2+k^2}\,dx$$
 
-Then
+Then, it follows that:
 
 $$I_1=\frac{bk}{a+1}C$$
 
-Now define
+Now, define:
 
 $$f(z)=\frac{z^{a+b}}{(z^b+1)^2+k^2}$$
 
-We use a wedge contour with opening angle
+We use a wedge contour with an opening angle of
 
 $$\frac{2\pi}{b}$$
 
@@ -119,11 +119,11 @@ The branch is chosen so that
 
 $$0<\arg z<\frac{2\pi}{b}$$
 
-This wedge is useful because rotating $z$ by $2\pi/b$ leaves $z^b$ unchanged:
+This wedge is quite useful in general because rotating $z$ by $2\pi/b$ leaves $z^b$ unchanged:
 
 $$(ze^{2\pi i/b})^b=z^b e^{2\pi i}=z^b$$
 
-The poles occur when
+It follows that the poles occur when
 
 $$(z^b+1)^2+k^2=0$$
 
@@ -139,7 +139,7 @@ and
 
 $$z_2^b=-1-ik$$
 
-Let
+Now, let
 
 $$\alpha=\arctan k$$
 
@@ -241,7 +241,7 @@ Now consider
 
 $$I_2=\int_0^\infty x^a\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\,dx$$
 
-Use integration by parts. Let
+Use integration by parts yet again. Let
 
 $$u=\operatorname{arctanh}\left(\frac{k}{1+x^b}\right),\qquad dv=x^a\,dx$$
 
@@ -283,11 +283,11 @@ Then
 
 $$I_2=\frac{bk}{a+1}D$$
 
-Now define
+Now, define:
 
 $$h(z)=\frac{z^{a+b}}{(z^b+1)^2-k^2}$$
 
-Again use the wedge
+Again, use the wedge:
 
 $$0<\arg z<\frac{2\pi}{b}$$
 
@@ -405,11 +405,11 @@ Start with
 
 $$I_1=\int_0^\infty x^a\arctan\left(\frac{k}{1+x^b}\right)\,dx$$
 
-Put
+Substitute the variable:
 
 $$t=x^b$$
 
-Then
+Then, it follows that:
 
 $$x=t^{1/b},\qquad dx=\frac1b t^{1/b-1}\,dt$$
 
@@ -417,7 +417,7 @@ Therefore,
 
 $$x^a\,dx=\frac1b t^{\frac{a+1}{b}-1}\,dt$$
 
-Hence
+Hence, the expression is equivalent to:
 
 $$I_1=\frac1b\int_0^\infty t^{\mu-1}\arctan\left(\frac{k}{1+t}\right)\,dt$$
 
@@ -435,7 +435,7 @@ $$\int_0^\infty f(t)G(t)\,dt=\int_0^\infty F(t)g(t)\,dt$$
 
 provided the integrals converge.
 
-Choose
+Now, we can cleverly choose the necessary pair of functions as
 
 $$f(t)=t^{\mu-1}$$
 
@@ -443,11 +443,11 @@ and
 
 $$G(t)=\arctan\left(\frac{k}{1+t}\right)$$
 
-Then
+Then, it follows that:
 
 $$F(s)=\mathcal L\{t^{\mu-1}\}(s)=\int_0^\infty e^{-st}t^{\mu-1}\,dt=\frac{\Gamma(\mu)}{s^\mu}$$
 
-So
+Simplifying,
 
 $$F(s)=\frac{\Gamma(\mu)}{s^\mu}$$
 
@@ -455,7 +455,7 @@ Now we need $g(u)$ such that
 
 $$\mathcal L\{g(u)\}(s)=\arctan\left(\frac{k}{1+s}\right)$$
 
-We claim that
+We claim that:
 
 $$g(u)=e^{-u}\frac{\sin(ku)}{u}$$
 
@@ -619,13 +619,13 @@ $$\boxed{I_1(a,b,k)=\frac{\pi}{a+1}(1+k^2)^{\frac{a+1}{2b}}\frac{\sin\left(\frac
 
 ## 4. Second Integral, Approach 2: Parseval--Goldstein Theorem
 
-Now evaluate
+Now, we evaluate
 
 $$I_2=\int_0^\infty x^a\operatorname{arctanh}\left(\frac{k}{1+x^b}\right)\,dx$$
 
 using the same Laplace-transform method.
 
-Again put
+Again, let us substitute:
 
 $$t=x^b$$
 
@@ -633,11 +633,11 @@ Then
 
 $$x^a\,dx=\frac1b t^{\frac{a+1}{b}-1}\,dt$$
 
-Hence
+Hence, it follows that:
 
 $$I_2=\frac1b\int_0^\infty t^{\mu-1}\operatorname{arctanh}\left(\frac{k}{1+t}\right)\,dt$$
 
-Choose
+Choose the pair of functions to be:
 
 $$f(t)=t^{\mu-1}$$
 
@@ -653,7 +653,7 @@ Now we need $g(u)$ such that
 
 $$\mathcal L\{g(u)\}(s)=\operatorname{arctanh}\left(\frac{k}{1+s}\right)$$
 
-We claim that
+We claim that:
 
 $$g(u)=e^{-u}\frac{\sinh(ku)}{u}$$
 
