@@ -1,0 +1,142 @@
+---
+title: "On Radars, Resource Allocation, and the Problem of Distributed Coordination"
+date: 2026-11-27
+description: "On distributed optimization, incomplete information, and radar interference."
+categories: [mathematics, research, signal processing]
+resources:
+  - DRGS_Manuscript.pdf
+---
+
+One of the more interesting classes of problems in distributed systems concerns the reconciliation of decisions made by a number of agents, each of whom has access to only a small subset of the information relevant to the system as a whole.
+
+Consider, for instance, Dijkstra's famous problem of the [Five Dining Philosophers](https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD310.html). Five philosophers are seated around a table, each requiring two forks in order to eat. There is one fork between each pair of adjacent philosophers, with the consequence that, as Dijkstra puts it, "no two neighbours may be eating simultaneously." There is, however, no reason why two non-neighbouring philosophers cannot eat at the same time.
+
+A somewhat analogous problem arises in the allocation of resources amongst automotive radars, albeit with some additional mathematical and physical complications.
+
+Over the past few months, I've been working on this problem with Dr. R. Swaminathan and Dr. Dibbendu Roy at IIT Indore. The following is a (hopefully accessible) exposition of some of our findings.
+
+## I. The resource allocation problem
+
+The fundamental principle behind radar is fairly simple: transmit an electromagnetic signal, receive the echoes reflected by objects in the vicinity, and infer something about the objects responsible for those echoes.
+
+FMCW (Frequency Modulated Continuous Wave) radars transmit signals whose frequencies vary with time, commonly referred to as *chirps*. By processing the received signals over several such transmissions and antenna elements, one can estimate the distances, velocities and angular positions of multiple targets.
+
+Now, consider a number of vehicles equipped with such radars, operating in close proximity to one another. The transmissions of one radar may interfere with the reception of another. One obvious means of circumventing this problem is to allocate mutually exclusive transmission times to all radars.
+
+But this is unnecessarily restrictive. Much as in the dining philosophers problem, the simultaneous utilization of resources by two agents need not constitute a conflict unless there is some interaction between the two.
+
+Suppose we have 32 available chirp slots and each radar requires 10 of them. Suppose further that radar A interferes with B, and B with C, but A and C do not interfere with one another. There is nothing precluding A and C from using the very same 10 slots.
+
+The natural mathematical abstraction here is a graph: vertices represent radars, edges represent potential interference, and each vertex is to be assigned a subset of a prescribed cardinality from a common set of resources.
+
+For sufficiently large networks, however, the sheer number of possible assignments renders exhaustive search impractical. Even an individual radar choosing 10 slots out of 32 has over 64 million possible assignments.
+
+## II. What does a radar actually know?
+
+In his 1945 essay, [The Use of Knowledge in Society](https://www.econlib.org/library/Essays/hykKnw.html), Hayek distinguishes between general knowledge and the knowledge of particular circumstances possessed by individual agents. Irrespective of one's views on the economic arguments advanced in the essay, the underlying information problem is of considerable relevance to distributed optimization.
+
+A considerable simplification of our problem would result from assuming that all radars possess instantaneous knowledge of the assignments of all their neighbours.
+
+In practice, however, there are two distinct relationships between a pair of radars:
+
+- Whether their transmissions can interfere with one another;
+- Whether they can communicate with one another sufficiently promptly to coordinate their transmissions.
+
+There is no a priori reason for the two to coincide.
+
+Hence, instead of characterizing the network by a single graph, we introduce two graphs: one characterizing the physical conflicts and another characterizing the availability of timely communication.
+
+Now, one may argue that the temporary unavailability of information about a neighbouring radar need not necessarily imply complete ignorance about its assignment, and they'd have a strong point. A radar might, for instance, possess an assignment communicated by its neighbour a few milliseconds ago.
+
+The question is how much credence we ought to attach to said information.
+
+This motivates our use of *Age of Information* (AoI), whereby the relative importance attached to previously received information depends on its age. We incorporate this into the objective function itself, rather than indiscriminately substituting outdated information into an algorithm designed under the assumption of complete information.
+
+There is also an interesting distinction here between the time scales over which the physical environment changes, the communication network changes, and the computation of an assignment takes place. A change in the communication graph does not necessarily warrant suspending radar operation altogether. The radars can continue to use their existing assignments whilst preparing new ones, subject to the appropriate synchronization and hardware constraints.
+
+## III. A brief mathematical digression
+
+Let $X$ denote a binary matrix whose rows are the chirp assignments of the individual radars. Let $A$ denote the adjacency matrix of the conflicts for which timely coordination is possible.
+
+The optimization problem we formulate is essentially of the form
+
+$$
+\min_X \quad
+\frac{1}{2}\operatorname{tr}(X^\top AX)
++\lambda\langle F,X\rangle,
+$$
+
+subject to a fixed number of ones in each row of $X$.
+
+The first term penalizes overlapping assignments amongst interacting radars; the second accounts for information concerning radars whose current assignments are unavailable.
+
+We investigate four algorithms for solving this problem, two of which are stochastic and two deterministic.
+
+The stochastic algorithms draw heavily on ideas from statistical mechanics and Markov chain Monte Carlo. Associated with the energy function $E(X)$ is the Gibbs distribution
+
+$$
+\pi_\beta(X)=
+\frac{\exp(-\beta E(X))}
+{\sum_Y\exp(-\beta E(Y))}.
+$$
+
+As the inverse temperature $\beta$ increases, this distribution places progressively more probability mass on configurations of low energy.
+
+Of particular interest to me was the possibility of introducing auxiliary Gaussian random variables into the problem in such a manner that, conditional on these variables, the assignments of the individual radars become independent. This permits simultaneous sampling of their assignments whilst preserving the desired stationary distribution.
+
+The other two algorithms are based on block coordinate descent, wherein we optimize over the assignment of an individual radar, or jointly over those of a pair of radars, keeping the remaining assignments fixed.
+
+We derive bounds on the expected objective gap after a finite number of iterations, investigate the convergence of the stochastic algorithms, and study the sensitivity of the resulting distributions to changes in the information available to the radars.
+
+## IV. Are we optimizing the right quantity?
+
+This is perhaps the part of the project that I found most intriguing.
+
+For several weeks, we struggled with a rather peculiar phenomenon: we could observe substantial improvements in SINR (Signal-to-Interference-plus-Noise Ratio) without observing commensurate improvements in the ability of our radars to detect targets.
+
+Of course, there is no mathematical law stipulating that an improvement in SINR must produce a proportional improvement in detection. SINR is a useful metric, but it is not a complete descriptor of the statistical properties of the received signal.
+
+The distinction between noise and interference is particularly important here. Two signals of identical power can have vastly different effects on an estimation algorithm depending on their structure.
+
+Consider the case of two radars illuminating a common object. There are now (amongst others) two possible propagation paths by which a signal can reach the first radar:
+
+1. Radar A transmits a signal, which is reflected by the object back to A.
+2. Radar B transmits a signal, which is reflected by the very same object towards A.
+
+We refer to the latter as a *cross echo*.
+
+A cross echo is not necessarily well characterized by treating it as additional Gaussian noise. Its properties depend on the transmitted waveform, the geometry of the propagation path, the motion of the target, and the relative phases of the signals.
+
+With some guidance from my mentors, we subsequently developed a cross-echo interference model which enabled us to establish, under certain assumptions, a direct relationship between the expected interference power and the physical overlap of chirp assignments.
+
+A particularly nice aspect of this formulation is that it also lends itself to an analysis using the machinery of sparse recovery, more concretely, the mutual coherence of the dictionaries associated with the desired and interfering signals.
+
+The problem thus has an interesting interplay between combinatorial optimization, probability theory and statistical signal processing.
+
+## V. Some numerical results
+
+In one of our simulated two-radar configurations, each radar selects 10 chirps out of a common pool of 32, and there are six targets in a common range cell.
+
+| Algorithm | Detection rate | False-discovery rate |
+|---|---:|---:|
+| Random assignment | 42.42% | 9.28% |
+| Row Gibbs sampling | 91.65% | 4.34% |
+| Gaussian Gibbs sampling | 91.83% | 4.67% |
+| Row BCD | 93.02% | 4.13% |
+| Paired BCD | 94.08% | 3.90% |
+
+These results correspond to an input SNR of −15 dB and are averaged over 1,000 evaluated radar cells.
+
+To be fair, the improvements are not nearly as dramatic under all operating conditions. In particular, our numerical experiments with larger networks demonstrate that the preservation of a desirable stationary distribution does not, by itself, guarantee good performance within a small computational budget.
+
+Nor should the results above be construed as an experimentally established guarantee for automotive radars operating in the real world. The assumptions underlying the interference model, synchronization mechanisms and receiver warrant further investigation.
+
+## Manuscript
+
+The current working draft, *Algorithms for Distributed Chirp Assignment in MIMO-FMCW Systems*, contains the mathematical formulation of the problem, the four algorithms and their theoretical analyses, the interference model, and the numerical experiments conducted thus far.
+
+We intend to submit the manuscript to **IEEE Transactions on Signal Processing (TSP)** for review shortly, following further edits and revisions.
+
+[Read the preliminary manuscript (PDF)](DRGS_Manuscript.pdf)
+
+The manuscript is a work in progress and has not yet undergone peer review.
