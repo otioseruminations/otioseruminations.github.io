@@ -1,15 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..700;1,400..700&family=Newsreader:ital,wght@0,400..700;1,400..700&display=swap');
+
+
+/* ==========================================
+   I. SITE-WIDE TYPOGRAPHY
+   ========================================== */
+
+:root {
+    --bs-body-font-family: 'Newsreader', Georgia, serif;
+    --bs-font-sans-serif: 'Newsreader', Georgia, serif;
+}
+
 body {
-  line-height: 1.7;
+    font-family: 'Newsreader', Georgia, serif;
+    line-height: 1.7;
+    min-height: 100vh;
 }
 
 p {
-  font-size: 1.05rem;
+    font-size: 1.05rem;
 }
 
-.quarto-title-block .title {
-  font-weight: 700;
+h1, h2, h3, h4, h5, h6,
+.navbar,
+.navbar-title,
+.quarto-title-block {
+    font-family: 'Newsreader', Georgia, serif;
 }
 
+.quarto-title-block .title,
 .navbar-title {
-  font-weight: 700;
+    font-weight: 700;
+}
+
+
+/* ==========================================
+   II. LIGHT AND DARK COLOUR PALETTES
+   ========================================== */
+
+body.quarto-light {
+    --site-paper: #ffffff;
+    --site-ink: #000000;
+    --site-ink-rgb: 0, 0, 0;
+    --site-paper-rgb: 255, 255, 255;
+    --site-border: #dedbd5;
+}
+
+body.quarto-dark {
+    --site-paper: #181818;
+    --site-ink: #ffffff;
+    --site-ink-rgb: 255, 255, 255;
+    --site-paper-rgb: 24, 24, 24;
+    --site-border: #383838;
+}
+
+body.quarto-light,
+body.quarto-dark {
+    --bs-body-color: var(--site-ink);
+    --bs-body-color-rgb: var(--site-ink-rgb);
+    --bs-body-bg: var(--site-paper);
+    --bs-body-bg-rgb: var(--site-paper-rgb);
+    --bs-heading-color: var(--site-ink);
+    --bs-secondary-color: var(--site-ink);
+    --bs-emphasis-color: var(--site-ink);
+    --bs-link-color: var(--site-ink);
+    --bs-link-color-rgb: var(--site-ink-rgb);
+    --bs-link-hover-color: var(--site-ink);
+    --bs-link-hover-color-rgb: var(--site-ink-rgb);
+
+    background-color: var(--site-paper);
+    color: var(--site-ink);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--site-ink);
+}
+
+a:not(.btn) {
+    color: var(--site-ink);
+}
+
+main p a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+
+/* ==========================================
+   III. NAVIGATION AND FOOTER
+   ========================================== */
+
+#quarto-header .navbar {
+    background-color: var(--site-paper) !important;
+    color: var(--site-ink) !important;
+    border-bottom: 1px solid var(--site-border);
+}
+
+#quarto-header .navbar-title,
+#quarto-header .navbar-brand,
+#quarto-header .nav-link,
+#quarto-header .quarto-color-scheme-toggle {
+    color: var(--site-ink) !important;
+}
+
+.navbar .nav-link:hover {
+    opacity: 0.7;
+}
+
+body.quarto-light .navbar-toggler-icon,
+body.quarto-light .quarto-color-scheme-toggle .bi::before {
+    filter: brightness(0);
+}
+
+body.quarto-dark .navbar-toggler-icon,
+body.quarto-dark .quarto-color-scheme-toggle .bi::before {
+    filter: brightness(0) invert(1);
+}
+
+.nav-footer {
+    background-color: var(--site-paper);
+    color: var(--site-ink);
+    border-top: 1px solid var(--site-border);
+}
+
+.nav-footer a {
+    color: var(--site-ink);
+}
+
+#TOC a {
+    color: var(--site-ink) !important;
+}
+
+
+/* ==========================================
+   IV. HOMEPAGE BACKGROUNDS
+   ========================================== */
+
+body.home-page {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Light mode: Imperial Harbour */
+
+body.home-page.quarto-light {
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.25),
+            rgba(255, 255, 255, 0.25)
+        ),
+        url('home-light.png');
+}
+
+/* Dark mode: Moonlit Ruins */
+
+body.home-page.quarto-dark {
+    background-image:
+        linear-gradient(
+            rgba(8, 10, 16, 0.50),
+            rgba(8, 10, 16, 0.50)
+        ),
+        url('home-dark.png');
+}
+
+body.home-page #quarto-content,
+body.home-page main {
+    background-color: transparent;
+}
+
+body.home-page .quarto-title-block .title {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+}
+
+body.home-page main p {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    body.home-page {
+        background-attachment: scroll;
+    }
+}
+
+
+/* ==========================================
+   V. ESSAY TYPOGRAPHY
+   ========================================== */
+
+body.essay-page main#quarto-document-content {
+    font-family: 'EB Garamond', Garamond, Georgia, serif;
+    font-size: 1.2rem;
+    line-height: 1.7;
+}
+
+body.essay-page main#quarto-document-content p {
+    font-size: inherit;
+}
+
+/* Retain Newsreader for titles and headings */
+
+body.essay-page #title-block-header {
+    font-family: 'Newsreader', Georgia, serif;
+}
+
+body.essay-page h1,
+body.essay-page h2,
+body.essay-page h3,
+body.essay-page h4 {
+    font-family: 'Newsreader', Georgia, serif;
+}
+
+
+/* ==========================================
+   VI. ESSAY LISTINGS
+   ========================================== */
+
+.listing-title,
+.listing-description,
+.listing-date,
+.listing-author,
+.listing-category,
+.quarto-title-meta,
+.quarto-title-meta-heading {
+    color: var(--site-ink) !important;
 }
