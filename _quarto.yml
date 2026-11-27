@@ -1,24 +1,31 @@
 project:
   type: website
+  resources:
+    - home-light.png
+    - home-dark.png
 
 website:
   title: "Otiose Ruminations"
   site-url: "https://otioseruminations.github.io"
   description: "Essays in mathematics, history, and other changing fascinations."
-navbar:
-  right:
-    - text: Mathematics
-      href: mathematics.qmd
-    - text: All Essays
-      href: essays.qmd
-    - text: About
-      href: about.qmd
+
+  navbar:
+    right:
+      - text: Home
+        href: index.qmd
+      - text: All Essays
+        href: essays.qmd
+      - text: About
+        href: about.qmd
+
   page-footer:
     center: "© 2026 Otiose Ruminations"
 
 format:
   html:
-    theme: cosmo
+    theme:
+      light: cosmo
+      dark: darkly
     toc: true
     html-math-method: mathjax
     css: styles.css
