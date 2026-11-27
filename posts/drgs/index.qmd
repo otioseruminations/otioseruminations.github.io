@@ -1,7 +1,7 @@
 ---
 title: "On Radars, Resource Allocation, and the Problem of Distributed Coordination"
 date: 2026-11-27
-description: "On distributed optimization, incomplete information, and radar interference."
+description: "Dining philosophers, uncommunicative radars, and the mathematics of getting along. Concordia parvae res crescunt, discordia maximae dilabuntur."
 categories: [mathematics, research, signal processing]
 resources:
   - DRGS_Manuscript.pdf
@@ -9,11 +9,13 @@ resources:
 
 One of the more interesting classes of problems in distributed systems concerns the reconciliation of decisions made by a number of agents, each of whom has access to only a small subset of the information relevant to the system as a whole.
 
-Consider, for instance, Dijkstra's famous problem of the [Five Dining Philosophers](https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD310.html). Five philosophers are seated around a table, each requiring two forks in order to eat. There is one fork between each pair of adjacent philosophers, with the consequence that, as Dijkstra puts it, "no two neighbours may be eating simultaneously." There is, however, no reason why two non-neighbouring philosophers cannot eat at the same time.
+Consider, for instance, Dijkstra's famous problem of the [Five Dining Philosophers](https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD310.html). Five philosophers are seated around a table, each requiring two forks in order to eat. There is one fork between each pair of adjacent philosophers, with the consequence that, as Dijkstra puts it, "no two neighbours may be eating simultaneously." 
+
+There is, however, no reason why two non-neighbouring philosophers cannot eat at the same time.
 
 A somewhat analogous problem arises in the allocation of resources amongst automotive radars, albeit with some additional mathematical and physical complications.
 
-Over the past few months, I've been working on this problem with Dr. R. Swaminathan and Dr. Dibbendu Roy at IIT Indore. The following is a (hopefully accessible) exposition of some of our findings.
+Over the past few months, I’ve been working on this problem with much help from Prof. Dibbendu Roy and Dr. Chandrashekhar Rai. The following is a (hopefully accessible) exposition of some of our findings.
 
 ## I. The resource allocation problem
 
