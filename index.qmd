@@ -1,5 +1,7 @@
 ---
 title: "Otiose Ruminations"
+body-classes: home-page
+toc: false
 ---
 
 Welcome to **Otiose Ruminations**.
