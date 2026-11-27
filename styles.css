@@ -188,6 +188,8 @@ body.home-page main p {
    V. ESSAY TYPOGRAPHY
    ========================================== */
 
+/* Main prose: Garamond */
+
 body.essay-page main#quarto-document-content {
     font-family: 'EB Garamond', Garamond, Georgia, serif;
     font-size: 1.2rem;
@@ -198,17 +200,36 @@ body.essay-page main#quarto-document-content p {
     font-size: inherit;
 }
 
-/* Retain Newsreader for titles and headings */
+/* Essay titles: Newsreader */
 
 body.essay-page #title-block-header {
     font-family: 'Newsreader', Georgia, serif;
 }
 
-body.essay-page h1,
+body.essay-page h1 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-style: normal;
+    font-weight: 700;
+}
+
+/* Essay subheadings: Newsreader Italic */
+
 body.essay-page h2,
 body.essay-page h3,
-body.essay-page h4 {
+body.essay-page h4,
+body.essay-page h5,
+body.essay-page h6,
+body.essay-page .subtitle {
     font-family: 'Newsreader', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+}
+
+/* Captions and footnotes: Garamond */
+
+body.essay-page figcaption,
+body.essay-page .footnotes {
+    font-family: 'EB Garamond', Garamond, Georgia, serif;
 }
 
 
